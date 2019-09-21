@@ -1,0 +1,23 @@
+#!/bin/sh -eu
+#!/bin/dash -eux    # For POSIX-compliance during development
+
+# TODO: Replace git-reup with alias: git pull --autostash --rebase --stat
+
+stashed=1    # 1:false
+case "$0" in
+    *git-reup*)
+        set -- --rebase "$@"
+        stash_output=$(git stash push -m "Auto-stash by git-reup")
+        case $stash_output in Saved*) stashed=0 ;; esac    # 0:true
+        ;;
+    *)
+        set -- --no-stat "$@"
+        ;;
+esac
+
+old_head_hash=$(git rev-parse HEAD)
+git pull "$@"
+new_head_hash=$(git rev-parse HEAD)
+
+[ $stashed = 0 ] && git stash pop --index
+[ $old_head_hash != $new_head_hash ] && git --no-pager llg "$old_head_hash.."

@@ -1,0 +1,6 @@
+#!/bin/sh -eux
+
+brew install git
+ln -sf "$(brew --prefix)/share/git-core/contrib/diff-highlight/diff-highlight" "$HOME/local/bin"
+
+brew cask install sublime-merge

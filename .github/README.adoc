@@ -1,0 +1,20 @@
+# Wes Augur's Dotfiles
+
+## Installation
+[source,shell]
+----
+curl https://wesaugur.sh | sh
+----
+
+## Usage
+[source,shell]
+----
+dotfiles git status
+----
+
+## Uninstallation
+[source,shell]
+----
+dotfiles git ls-files | xargs rm
+rm -rf "$DOTFILES_GIT_DIR"
+----

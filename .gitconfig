@@ -1,0 +1,46 @@
+# ~/.gitconfig
+
+# NOTE: Must match with github section in ~/.ssh/config
+[user]
+    useConfigOnly = true
+    name  = Wes Augur
+
+[alias]
+    id = config user.email
+    st = status
+    df = diff
+    dw = diff --color-words
+    br = branch
+    co = checkout
+    rb = rebase
+    mt = mergetool
+    lg = log --graph --format='%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%ar) %C(blue)<%aN>%Creset'
+    llg = lg --stat
+    staged   = diff --staged
+    undo     = restore --patch
+    unstage  = restore --patch --staged
+    recommit = commit --amend
+    squash   = rebase --interactive  # usage: "git squash HEAD~N" where N is # of commits to squash
+    push-force = push --force-with-lease
+
+[pager]
+    diff = diff-highlight | $PAGER
+    show = diff-highlight | $PAGER
+    log  = diff-highlight | $PAGER
+
+[diff]
+    algorithm = histogram
+    mnemonicprefix = true
+
+[merge]
+    tool = smerge
+
+[grep]
+    lineNumber = true
+
+[help]
+    autocorrect = -1
+
+# Mac
+[credential]
+    helper = osxkeychain
