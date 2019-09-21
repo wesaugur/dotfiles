@@ -6,6 +6,7 @@
     name  = Wes Augur
 
 [alias]
+    up = pull --autostash --rebase --stat
     id = config user.email
     st = status
     df = diff
