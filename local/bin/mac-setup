@@ -3,4 +3,7 @@
 brew install git
 ln -sf "$(brew --prefix)/share/git-core/contrib/diff-highlight/diff-highlight" "$HOME/local/bin"
 
+brew install gitleaks
+brew install bash-completion
+
 brew cask install sublime-merge

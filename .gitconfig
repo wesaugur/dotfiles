@@ -24,10 +24,8 @@
     squash   = rebase --interactive  # usage: "git squash HEAD~N" where N is # of commits to squash
     push-force = push --force-with-lease
 
-[pager]
-    diff = diff-highlight | $PAGER
-    show = diff-highlight | $PAGER
-    log  = diff-highlight | $PAGER
+[core]
+    pager = diff-highlight | $PAGER
 
 [diff]
     algorithm = histogram

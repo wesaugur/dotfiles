@@ -3,8 +3,7 @@
 export PATH=~/local/bin:$PATH
 
 export EDITOR=vim
-export PAGER=less
-export LESS="-RFX"
+export PAGER=less; export LESS="FRX"
 
 export DOTFILES_GIT_DIR="$HOME/.dotfiles.git"
 alias dotfiles='GIT_DIR="$DOTFILES_GIT_DIR" GIT_WORK_TREE="$HOME"'

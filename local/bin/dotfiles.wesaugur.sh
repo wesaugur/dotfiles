@@ -1,9 +1,9 @@
 #!/bin/sh
 
-REPO="dotfiles"
-
 # usage: curl https://dotfiles.wesaugur.sh | sh
 #   src: code.wes.augur.us/dotfiles
+
+REPO="dotfiles"
 
 set -eu
 
