@@ -1,8 +1,6 @@
 # ~/.bash_profile
 
-if [ -f ~/.bashrc ]; then
-    source ~/.bashrc
-fi
+[ -f ~/.bashrc ] && source ~/.bashrc
 
 export TMUX_SESSION_DEFAULT="BASE"
 if [ -z "$TMUX" ]; then

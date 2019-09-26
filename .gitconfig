@@ -10,13 +10,13 @@
     id = config user.email
     st = status
     df = diff
-    dw = diff --color-words
     br = branch
     co = checkout
     rb = rebase
     mt = mergetool
     lg = log --graph --format='%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%ar) %C(blue)<%aN>%Creset'
     llg = lg --stat
+    redline  = diff --color-words
     staged   = diff --staged
     undo     = restore --patch
     unstage  = restore --patch --staged
