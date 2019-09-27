@@ -1,3 +1,43 @@
 #!/bin/sh
+exec cat << "EOF"
+Git Prompt:
+  %  Untracked
+  *  Unstaged
+  +  Staged
+  $  Stashed
+  =  Same as upstream
+  <  Behind upstream
+  >  Ahead of upstream
+  <> Diverged from upstream
 
-echo TODO
+- Stashing
+> git stash list
+> git stash show  [STASH]
+> git stash push  [-m MESSAGE]
+> git stash pop   [STASH]
+> git stash apply [STASH]
+> git stash drop  [STASH]
+> git stash branch BRANCH [STASH]
+
+- Branching
+> git branch [--list] [--all] [-vv]
+> git branch BRANCH
+> git checkout [-b] BRANCH
+> git push [--set-upstream|-u] [origin] [BRANCH]
+> git branch --delete BRANCH
+> git push origin --delete BRANCH
+> git remote show origin
+> git remote prune origin
+
+- Tagging
+> git tag --annotate TAG [HASH]
+> git push REMOTE TAG
+
+- Changelog
+> git shortlog --numbered
+
+- Revisions
+> git help revisions
+
+- GitHub Flow: http://scottchacon.com/2011/08/31/github-flow.html
+EOF

@@ -11,32 +11,50 @@ alias dotfiles='GIT_DIR="$DOTFILES_GIT_DIR" GIT_WORK_TREE="$HOME"'
 export HOMEDIR_GIT_DIR="$HOME/.homedir.git"
 alias homedir='GIT_DIR="$HOMEDIR_GIT_DIR" GIT_WORK_TREE="$HOME"'
 
-alias t="tmux"
-alias v="vim"
-alias g="git"
-alias d="dotfiles"
-alias h="homedir"
-alias ll="ls -alh"
-alias gu="git up"
-alias gs="git status"
-alias gd="git diff"
-alias ga="git add"
-alias gp="gitleaks -v --repo=. && git push"
-alias gsr="git recursive status"
-alias ts='tmux attach -t "$TMUX_SESSION_DEFAULT" || tmux new -s "$TMUX_SESSION_DEFAULT"'
-
-alias grep="grep --line-number --color=auto"
-
 case $(uname) in
     Linux*)
         alias ls="ls -F --color=auto"
         ;;
     Darwin*)  # Mac +Homebrew
         alias ls="ls -FG"
-        export PATH=/usr/local/sbin:/usr/local/bin:$PATH    # Homebrew
-        for file in /usr/local/etc/bash_completion.d/*; do source $file ; done
+        export PATH=$(brew --prefix)/sbin:$(brew --prefix)/bin:$PATH
+        export BASH_COMPLETION_COMPAT_DIR="$(brew --prefix)/etc/bash_completion.d"
+        BASH_COMPLETION_SH="$(brew --prefix)/etc/profile.d/bash_completion.sh"
+        [ -r "$BASH_COMPLETION_SH" ] && source "$BASH_COMPLETION_SH"
         ;;
 esac
+
+alias ll="ls -alh"
+alias v="vim"
+alias d="dotfiles"
+alias h="homedir"
+alias g="git";          __git_complete g  _git
+alias gu="git up";      __git_complete gu _git_pull
+alias gs="git status";  __git_complete gs _git_status
+alias gd="git diff";    __git_complete gd _git_diff
+alias ga="git add";     __git_complete ga _git_add
+alias gp="gitleaks -v --repo=. && git push";  __git_complete gp _git_push
+alias gsr="git recursive status"
+alias ts='tmux attach -t "$TMUX_SESSION_DEFAULT" || tmux new -s "$TMUX_SESSION_DEFAULT"'
+
+alias grep="grep --line-number --color=auto"
+
+### Colors
+C_BLACK=$(tput setaf 0);    P_BLACK="\[$C_BLACK\]"
+C_RED=$(tput setaf 1);      P_RED="\[$C_RED\]"
+C_GREEN=$(tput setaf 2);    P_GREEN="\[$C_GREEN\]"
+C_YELLOW=$(tput setaf 3);   P_YELLOW="\[$C_YELLOW\]"
+C_BLUE=$(tput setaf 4);     P_BLUE="\[$C_BLUE\]"
+C_MAGENTA=$(tput setaf 5);  P_MAGENTA="\[$C_MAGENTA\]"
+C_CYAN=$(tput setaf 6);     P_CYAN="\[$C_CYAN\]"
+C_WHITE=$(tput setaf 7);    P_WHITE="\[$C_WHITE\]"
+C_HI_BLACK=$(tput setaf 8); P_HI_BLACK="\[$C_HI_BLACK\]"
+
+C_RESET=$(tput sgr0);       P_RESET="\[$C_RESET\]"
+
+C_BOLD=$(tput bold);        P_BOLD="\[$C_BOLD\]"
+C_UNDERLINE=$(tput smul);   P_UNDERLINE="\[$C_UNDERLINE\]"
+C_REVERSE=$(tput rev);      P_REVERSE="\[$C_REVERSE\]"
 
 ### Prompt
 GIT_PS1_SHOWUPSTREAM=auto
@@ -45,16 +63,4 @@ GIT_PS1_SHOWSTASHSTATE=true
 GIT_PS1_SHOWCOLORHINTS=true
 GIT_PS1_SHOWUNTRACKEDFILES=true
 
-C_Off='\[\e[0m\]'
-C_DarkGray='\[\e[1;37m\]'
-C_LightGray='\[\e[0;37m\]'
-C_DarkGreen='\[\e[0;32m\]'
-C_LightGreen='\[\e[1;32m\]'
-
-case $TERM in
-    screen*)
-        TITLE_PS1='\[\ek\w\e\\\]'
-        ;;
-esac
-
-export PS1="${TITLE_PS1}${C_DarkGray}\u@\h ${C_DarkGreen}\w${C_DarkGray}\$(__git_ps1)${C_LightGray}>${C_Off} "
+PROMPT_COMMAND='__git_ps1 "$P_HI_BLACK\u@\h$P_RESET $P_BOLD\w$P_RESET" "> "'

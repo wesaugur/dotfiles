@@ -12,8 +12,6 @@
     df = diff
     br = branch
     co = checkout
-    rb = rebase
-    mt = mergetool
     lg = log --graph --format='%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%ar) %C(blue)<%aN>%Creset'
     llg = lg --stat
     redline  = diff --color-words
@@ -31,7 +29,16 @@
     algorithm = histogram
     mnemonicprefix = true
 
+[stash]
+    showPatch = true
+
+[rebase]
+    stat = true
+    autoStash = true
+    autoSquash = true
+
 [merge]
+    ff = only
     tool = smerge
 
 [grep]
@@ -39,7 +46,3 @@
 
 [help]
     autocorrect = -1
-
-# Mac
-[credential]
-    helper = osxkeychain

@@ -1,0 +1,40 @@
+#!/bin/sh -eux
+
+linux() {
+    echo "LINUX"
+}
+
+mac() {
+    command -v brew || ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
+    brew install tmux
+
+    brew install bash bash-completion@2
+    BREW_BASH="/usr/local/bin/bash"
+    grep "$BREW_BASH" /etc/shells || echo "$BREW_BASH" | sudo tee -a /etc/shells
+    chsh -s "$BREW_BASH"
+
+    brew install git git-crypt gitleaks
+    ln -sf "$(brew --prefix)/share/git-core/contrib/diff-highlight/diff-highlight" "$HOME/local/bin"
+    dotfiles git config --global credential.helper osxkeychain
+
+    brew install vim
+
+    brew install python
+
+    brew cask install kitty
+
+    brew cask install sublime-text
+    brew cask install sublime-merge
+
+    brew cask install keybase
+
+    brew install dash htop
+    brew cask install caffeine
+    brew cask install google-chrome firefox
+}
+
+case $(uname) in
+    Linux*) linux ;;
+    Darwin*)  mac ;;
+esac
