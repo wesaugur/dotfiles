@@ -26,6 +26,7 @@ mac() {
 
     brew cask install sublime-text
     brew cask install sublime-merge
+    ln -sf "$HOME/.config/sublime-text-3" "$HOME/Library/Application Support/Sublime Text 3"
 
     brew cask install keybase
 

@@ -1,0 +1,19 @@
+// Linux:                     ~/.config/sublime-text-3/Packages/User/Preferences.sublime-settings
+//   Mac: ~/Library/Application Support/Sublime Text 3/Packages/User/Preferences.sublime-settings
+
+{
+    "color_scheme": "Packages/Color Scheme - Default/Blackboard.tmTheme",
+    "draw_minimap_border": true,
+    "highlight_line": true,
+    "rulers": [80, 120],
+    "word_wrap": false,
+
+    "ensure_newline_at_eof_on_save": true,
+    "trim_trailing_whitespace_on_save": true,
+
+    "font_face": "Monaco",
+    "font_size": 18.0,
+
+    "translate_tabs_to_spaces": true,
+    "auto_complete_commit_on_tab": true
+}
