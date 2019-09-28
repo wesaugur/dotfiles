@@ -13,7 +13,7 @@ SKIP_DIR="$HOME/.github"
 export GIT_DIR="$HOME/.$REPO.git"  # git magic env-var
 export GIT_WORK_TREE="$HOME"       # git magic env-var
 
-git clone --quiet --bare "$GITHUB_URL" "$GIT_DIR"
+git clone --quiet --mirror "$GITHUB_URL" "$GIT_DIR"
 git config --local status.showUntrackedFiles no
 git checkout || { rm -r "$GIT_DIR"; exit 1; }
 
