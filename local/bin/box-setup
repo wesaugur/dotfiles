@@ -16,7 +16,7 @@ mac() {
 
     brew install git git-crypt gitleaks
     ln -sf "$(brew --prefix)/share/git-core/contrib/diff-highlight/diff-highlight" "$HOME/local/bin"
-    dotfiles git config --global credential.helper osxkeychain
+    git config --global credential.helper osxkeychain
 
     brew install vim
 
