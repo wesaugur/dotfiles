@@ -3,7 +3,7 @@
 export PATH=~/local/bin:$PATH
 
 export EDITOR=vim
-export PAGER=less; export LESS="FRX"
+export PAGER=less-color; export LESS="FRX"
 
 export DOTFILES_GIT_DIR="$HOME/.dotfiles.git"
 alias dotfiles='GIT_DIR="$DOTFILES_GIT_DIR" GIT_WORK_TREE="$HOME"'
@@ -39,7 +39,7 @@ alias ts='tmux attach -t "$TMUX_SESSION_DEFAULT" || tmux new -s "$TMUX_SESSION_D
 
 alias grep="grep --line-number --color=auto"
 
-### Colors
+### Foreground Colors       Bash Prompt Escaped Colors
 C_BLACK=$(tput setaf 0);    P_BLACK="\[$C_BLACK\]"
 C_RED=$(tput setaf 1);      P_RED="\[$C_RED\]"
 C_GREEN=$(tput setaf 2);    P_GREEN="\[$C_GREEN\]"

@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# export LESS_TERMCAP_mb=$(tput mb)       # Start blink
+export LESS_TERMCAP_md=$(tput setaf 1)  # Start bold; use red instead
+# export LESS_TERMCAP_me=$(tput me)       # Stop  blink,bold
+# export LESS_TERMCAP_so=$(tput so)       # Start reverse
+# export LESS_TERMCAP_se=$(tput se)       # Stop  reverse
+export LESS_TERMCAP_us=$(tput setaf 6)  # Start underline; use cyan instead
+export LESS_TERMCAP_ue=$(tput sgr0)     # Stop  underline
+
+exec less "$@"
