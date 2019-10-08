@@ -1,43 +1,66 @@
 #!/bin/sh
-exec cat << "EOF"
-Git Prompt:
-  %  Untracked
-  *  Unstaged
-  +  Staged
-  $  Stashed
+
+RESET=$(tput sgr0)
+
+C_RED=$(tput setaf 1)
+C_GREEN=$(tput setaf 2)
+C_YELLOW=$(tput setaf 3)
+C_BLUE=$(tput setaf 4)
+C_MAGENTA=$(tput setaf 5)
+C_CYAN=$(tput setaf 6)
+
+C_HI_BLACK=$(tput setaf 8)
+C_HI_RED=$(tput setaf 9)
+
+SECTION=${C_YELLOW}
+GIT="${C_HI_BLACK}> git${RESET}"
+ARG=${C_CYAN}
+OPT=${C_HI_BLACK}
+
+exec cat << EOF
+${SECTION}Git Prompt${RESET}
+  ${C_HI_RED}%  Untracked${RESET}
+  ${C_RED}*  Unstaged${RESET}
+  ${C_GREEN}+  Staged${RESET}
+  ${C_BLUE}$  Stashed${RESET}
   =  Same as upstream
   <  Behind upstream
   >  Ahead of upstream
   <> Diverged from upstream
 
-- Stashing
-> git stash list
-> git stash show  [STASH]
-> git stash push  [-m MESSAGE]
-> git stash pop   [STASH]
-> git stash apply [STASH]
-> git stash drop  [STASH]
-> git stash branch BRANCH [STASH]
+${SECTION}Stashing${RESET}
+${GIT} stash list
+${GIT} stash show  ${OPT}[STASH]${RESET}
+${GIT} stash push  ${OPT}[-m MESSAGE]${RESET}
+${GIT} stash pop   ${OPT}[STASH]${RESET}
+${GIT} stash apply ${OPT}[STASH]${RESET}
+${GIT} stash drop  ${OPT}[STASH]${RESET}
+${GIT} stash branch ${ARG}BRANCH${RESET} ${OPT}[STASH]${RESET}
 
-- Branching
-> git branch [--list] [--all] [-vv]
-> git branch BRANCH
-> git checkout [-b] BRANCH
-> git push [--set-upstream|-u] [origin] [BRANCH]
-> git branch --delete BRANCH
-> git push origin --delete BRANCH
-> git remote show origin
-> git remote prune origin
+${SECTION}Committing${RESET}
+${GIT} commit --fixup=${ARG}REV${RESET}
 
-- Tagging
-> git tag --annotate TAG [HASH]
-> git push REMOTE TAG
+${SECTION}Branching${RESET}
+${GIT} branch ${OPT}[--list] [--all] [-vv]${RESET}
+${GIT} branch ${ARG}BRANCH${RESET}
+${GIT} checkout [-b] ${ARG}BRANCH${RESET}
+${GIT} push ${OPT}[--set-upstream|-u] [origin] [BRANCH]${RESET}
+${GIT} branch --delete ${ARG}BRANCH${RESET}
+${GIT} push origin --delete ${ARG}BRANCH${RESET}
+${GIT} remote show origin
+${GIT} remote prune origin
 
-- Changelog
-> git shortlog --numbered
+${SECTION}Tagging${RESET}
+${GIT} tag --annotate ${ARG}TAG${RESET} ${OPT}[REV]${RESET}
+${GIT} push ${ARG}REMOTE${RESET} ${ARG}TAG${RESET}
 
-- Revisions
-> git help revisions
+${SECTION}Changelog${RESET}
+${GIT} shortlog --numbered
 
-- GitHub Flow: http://scottchacon.com/2011/08/31/github-flow.html
+${SECTION}Revisions${RESET}
+${GIT} help revisions
+
+${SECTION}GitHub Flow${RESET}
+http://scottchacon.com/2011/08/31/github-flow.html
+
 EOF

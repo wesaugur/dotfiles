@@ -30,15 +30,17 @@
     mnemonicprefix = true
 
 [stash]
+    showStat = false
     showPatch = true
+
+[pull]
+    ff = only
 
 [rebase]
     stat = true
-    autoStash = true
     autoSquash = true
 
 [merge]
-    ff = only
     tool = smerge
 
 [grep]
