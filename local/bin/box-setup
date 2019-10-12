@@ -34,11 +34,11 @@ mac() {
     brew install tarsnap
     brew cask install keybase
 
-    brew cask install 1password 1password-cli
-
     brew install dash htop pv parallel
-    brew cask install caffeine
+    brew cask install caffeine divvy flux
+    brew cask install dropbox evernote
     brew cask install google-chrome firefox
+    brew cask install 1password 1password-cli
 
     brew cleanup
     brew doctor
