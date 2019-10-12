@@ -97,18 +97,19 @@ nmap <C-p> :set list! list?<CR>
 " Ctrl-_ toggles cursor line highlighting
 nmap <C-_> :set cursorline! cursorline?<CR>
 
-" Map common Ctrl keys for TERM=rxvt
-if &term =~ "rxvt"
-    map Oa  <C-Up>
-    map Ob  <C-Down>
-    map Oc  <C-Right>
-    map Od  <C-Left>
-    map [2^ <C-Insert>
-    map [3^ <C-Delete>
-    map [7^ <C-Home>
-    map [8^ <C-End>
-    map [5^ <C-PageUp>
-    map [6^ <C-PageDown>
+" Map common Ctrl keys for tmux emulating
+" TERM=screen-256color + xterm-keys
+if &term =~ "screen"
+    map [1;5A  <C-Up>
+    map [1;5B  <C-Down>
+    map [1;5C  <C-Right>
+    map [1;5D  <C-Left>
+    map        <C-Insert>
+    map [3;5~  <C-Delete>
+    map [1;5H  <C-Home>
+    map [1;5F  <C-End>
+    map [5;5~  <C-PageUp>
+    map [6;5~  <C-PageDown>
 endif
 
 " Tab-Completion

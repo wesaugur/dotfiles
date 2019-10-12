@@ -18,6 +18,7 @@
     staged   = diff --staged
     undo     = restore --patch
     unstage  = restore --patch --staged
+    fixup    = commit --fixup=:/!-fixup!
     recommit = commit --amend
     squash   = rebase --interactive  # usage: "git squash HEAD~N" where N is # of commits to squash
     push-force = push --force-with-lease
