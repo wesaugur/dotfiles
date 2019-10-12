@@ -30,10 +30,13 @@ mac() {
     brew cask install sublime-merge
     ln -sf "$HOME/.config/sublime-text-3" "$HOME/Library/Application Support/Sublime Text 3"
 
+    brew install gpg
     brew install tarsnap
     brew cask install keybase
 
-    brew install dash htop
+    brew cask install 1password 1password-cli
+
+    brew install dash htop pv parallel
     brew cask install caffeine
     brew cask install google-chrome firefox
 

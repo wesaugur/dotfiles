@@ -104,8 +104,6 @@ if &term =~ "screen"
     map [1;5B  <C-Down>
     map [1;5C  <C-Right>
     map [1;5D  <C-Left>
-    map        <C-Insert>
-    map [3;5~  <C-Delete>
     map [1;5H  <C-Home>
     map [1;5F  <C-End>
     map [5;5~  <C-PageUp>
