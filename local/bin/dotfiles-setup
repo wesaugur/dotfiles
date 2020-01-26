@@ -20,6 +20,12 @@ mac() {
     [ "$SHELL" = "$BREW_BASH" ] || chsh -s "$BREW_BASH"
 
     brew install gpg
+
+    brew install stubby
+    sudo brew services start stubby
+    stubby-setdns-macos.sh -l
+    sudo stubby-setdns-macos.sh
+
     brew install git git-crypt gitleaks
     ln -sf "$(brew --prefix)/share/git-core/contrib/diff-highlight/diff-highlight" "$HOME/local/bin"
     git config --global credential.helper osxkeychain
