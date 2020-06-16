@@ -1,10 +1,30 @@
 #!/bin/sh -eux
 
-all() {
+pre() {
     $HOME/local/bin/permissions-fixup
 }
 
-linux() {
+post() {
+    FISH="$(command -v fish)" && [ "$SHELL" != "$FISH" ] && chsh -s "$FISH"
+}
+
+openbsd() {
+    return  # TODO
+}
+
+freebsd() {
+    return  # TODO
+}
+
+void_linux() {
+    return  # TODO
+}
+
+alpine_linux() {
+    return  # TODO
+}
+
+debian_linux() {
     return  # TODO
 }
 
@@ -12,31 +32,34 @@ mac() {
     command -v brew || ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
     brew analytics off
     brew update
-    brew upgrade
 
-    brew install bash bash-completion@2
+    brew_install() {
+        brew upgrade "$@" || brew install "$@"
+    }
+
+    brew_install bash bash-completion@2
     BREW_BASH="/usr/local/bin/bash"
     grep "$BREW_BASH" /etc/shells || echo "$BREW_BASH" | sudo tee -a /etc/shells
-    # [ "$SHELL" = "$BREW_BASH" ] || chsh -s "$BREW_BASH"
 
-    brew install fish
+    brew_install fish
     FISH="$(command -v fish)"
     grep "$FISH" /etc/shells || echo "$FISH" | sudo tee -a /etc/shells
-    [ "$SHELL" = "$FISH" ] || chsh -s "$FISH"
 
-    brew install gpg
+    brew_install gpg
 
-    brew install stubby
+    # FIXME: stubby has high latency
+    brew_install stubby
     sudo brew services start stubby
-    stubby-setdns-macos.sh -l
+    stubby-setdns-macos.sh -l || [ $? -eq 1 ]
     sudo stubby-setdns-macos.sh
+    stubby-setdns-macos.sh -l || [ $? -eq 1 ]
 
-    brew install git git-crypt gitleaks
+    brew_install git git-crypt gitleaks
     ln -sf "$(brew --prefix)/share/git-core/contrib/diff-highlight/diff-highlight" "$HOME/local/bin"
     git config --global credential.helper osxkeychain
 
-    brew install vim
-    brew install tmux
+    brew_install vim
+    brew_install tmux
     brew cask install kitty
 
     brew cask install sublime-text
@@ -47,9 +70,17 @@ mac() {
     brew doctor
 }
 
-all
+pre
 
 case $(uname) in
-    Linux*) linux ;;
+    OpenBSD*) openbsd ;;
+    FreeBSD*) freebsd ;;
+    Linux*) case $(FIXME) in
+        Void*)   void_linux ;;
+        Alpine*) alpine_linux ;;
+        Debian*) debian_linux ;;
+    esac ;;
     Darwin*)  mac ;;
 esac
+
+post
