@@ -1,7 +1,8 @@
 #!/bin/sh -eu
-#!/bin/dash -eux    # For POSIX-compliance during development
 
-GIT_ARGS=${@:-status}
+GIT_ARGS=${*:-status}
 DIR=${DIR:-.}
 
-find "${DIR}" -name '.git' -exec sh -c 'REPO=$(dirname {}) && echo ${REPO} && cd ${REPO} && git ${0} && echo' "${GIT_ARGS}" \;
+find "${DIR}" -name '.git' -exec sh -c \
+        'REPO=$(dirname ${1}) && echo ${REPO} && cd ${REPO} && git ${2} && echo' \
+        _ {} "${GIT_ARGS}" \;

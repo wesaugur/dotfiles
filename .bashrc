@@ -1,4 +1,6 @@
 # ~/.bashrc
+# shellcheck shell=bash
+# shellcheck disable=SC2034  # Unused variables
 
 export PATH=~/.local/bin:$PATH
 
@@ -17,9 +19,11 @@ case $(uname) in
         ;;
     Darwin*)  # Mac +Homebrew
         alias ls="ls -FG"
-        export PATH=$(brew --prefix)/sbin:$(brew --prefix)/bin:$PATH
-        export BASH_COMPLETION_COMPAT_DIR="$(brew --prefix)/etc/bash_completion.d"
-        BASH_COMPLETION_SH="$(brew --prefix)/etc/profile.d/bash_completion.sh"
+        BREW_PREFIX=$(brew --prefix)
+        export PATH=$BREW_PREFIX/sbin:$BREW_PREFIX/bin:$PATH
+        export BASH_COMPLETION_COMPAT_DIR="$BREW_PREFIX/etc/bash_completion.d"
+        BASH_COMPLETION_SH="$BREW_PREFIX/etc/profile.d/bash_completion.sh"
+        # shellcheck disable=SC1090  # Don't follow external file
         [ -r "$BASH_COMPLETION_SH" ] && source "$BASH_COMPLETION_SH"
         ;;
 esac

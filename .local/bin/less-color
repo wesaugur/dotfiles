@@ -1,4 +1,5 @@
 #!/bin/sh
+# shellcheck disable=SC2155  # Declare and assign separately to avoid masking return values
 
 # export LESS_TERMCAP_mb=$(tput mb)       # Start blink
 export LESS_TERMCAP_md=$(tput setaf 1)  # Start bold; use red instead

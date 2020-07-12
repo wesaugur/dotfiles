@@ -17,8 +17,8 @@ git clone --quiet "$GITHUB_URL" --separate-git-dir="$GIT_DIR" "$TMP_WORK_TREE"
 export GIT_WORK_TREE="$HOME"  # git magic env-var
 git checkout-index --all || [ $? -eq 128 ]
 git config --local status.showUntrackedFiles no
-git ls-files $SKIP_FILES | xargs git update-index --skip-worktree
-rm -rf "$TMP_WORK_TREE" $SKIP_FILES
+git ls-files "$SKIP_FILES" | xargs git update-index --skip-worktree
+rm -rf "$TMP_WORK_TREE" "$SKIP_FILES"
 
 POST_INSTALL="$HOME/.local/libexec/$REPO/$REPO.post-install"
-[ -x $POST_INSTALL ] && $POST_INSTALL
+[ -x "$POST_INSTALL" ] && $POST_INSTALL
