@@ -2,17 +2,6 @@
 # shellcheck shell=bash
 # shellcheck disable=SC2034  # Unused variables
 
-export PATH=~/.local/bin:$PATH
-
-export EDITOR=vim
-export PAGER=less-color; export LESS="iFRX"
-
-export DOTFILES_GIT_DIR="$HOME/.dotfiles.git"
-alias dotfiles='GIT_DIR="$DOTFILES_GIT_DIR" GIT_WORK_TREE="$HOME"'
-
-export HOMEDIR_GIT_DIR="$HOME/.homedir.git"
-alias homedir='GIT_DIR="$HOMEDIR_GIT_DIR" GIT_WORK_TREE="$HOME"'
-
 case $(uname) in
     Linux*)
         alias ls="ls -F --color=auto"
@@ -23,7 +12,7 @@ case $(uname) in
         export PATH=$BREW_PREFIX/sbin:$BREW_PREFIX/bin:$PATH
         export BASH_COMPLETION_COMPAT_DIR="$BREW_PREFIX/etc/bash_completion.d"
         BASH_COMPLETION_SH="$BREW_PREFIX/etc/profile.d/bash_completion.sh"
-        # shellcheck disable=SC1090  # Don't follow external file
+        # shellcheck disable=SC1090  # Don't shellcheck external file
         [ -r "$BASH_COMPLETION_SH" ] && source "$BASH_COMPLETION_SH"
         ;;
 esac
