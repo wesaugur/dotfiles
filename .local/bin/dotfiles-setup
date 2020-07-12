@@ -1,11 +1,12 @@
 #!/bin/sh -eux
 
 pre() {
-    $HOME/.local/bin/permissions-fixup
+    "$HOME/.local/bin/permissions-fixup"
 }
 
 post() {
     FISH="$(command -v fish)" && [ "$SHELL" != "$FISH" ] && chsh -s "$FISH"
+    pre-commit install
 }
 
 openbsd() {
@@ -37,6 +38,10 @@ mac() {
         brew upgrade "$@" || brew install "$@"
     }
 
+    brew_cask_install() {
+        brew cask upgrade "$@" || brew cask install "$@"
+    }
+
     brew_install bash bash-completion@2
     BREW_BASH="/usr/local/bin/bash"
     grep "$BREW_BASH" /etc/shells || echo "$BREW_BASH" | sudo tee -a /etc/shells
@@ -58,12 +63,14 @@ mac() {
     ln -sf "$(brew --prefix)/share/git-core/contrib/diff-highlight/diff-highlight" "$HOME/.local/bin"
     git config --global credential.helper osxkeychain
 
+    brew_install pre-commit shellcheck
+
     brew_install vim
     brew_install tmux
-    brew cask install kitty
+    brew_cask_install kitty
 
-    brew cask install sublime-text
-    brew cask install sublime-merge
+    brew_cask_install sublime-text
+    brew_cask_install sublime-merge
     ln -sfh "$HOME/.config/sublime-text-3" "$HOME/Library/Application Support/Sublime Text 3"
 
     brew cleanup
