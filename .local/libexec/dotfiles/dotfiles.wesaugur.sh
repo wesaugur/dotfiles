@@ -20,5 +20,5 @@ git config --local status.showUntrackedFiles no
 git ls-files $SKIP_FILES | xargs git update-index --skip-worktree
 rm -rf "$TMP_WORK_TREE" $SKIP_FILES
 
-POST_INSTALL="$HOME/local/libexec/$REPO/$REPO.post-install"
+POST_INSTALL="$HOME/.local/libexec/$REPO/$REPO.post-install"
 [ -x $POST_INSTALL ] && $POST_INSTALL

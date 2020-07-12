@@ -1,4 +1,4 @@
 #!/bin/sh -eu
 
-$HOME/local/bin/permissions-fixup
+$HOME/.local/bin/permissions-fixup
 echo "RUN: $(tput setaf 2)dotfiles-setup$(tput sgr0) in a new shell"

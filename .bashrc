@@ -1,6 +1,6 @@
 # ~/.bashrc
 
-export PATH=~/local/bin:$PATH
+export PATH=~/.local/bin:$PATH
 
 export EDITOR=vim
 export PAGER=less-color; export LESS="iFRX"

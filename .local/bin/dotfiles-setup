@@ -1,7 +1,7 @@
 #!/bin/sh -eux
 
 pre() {
-    $HOME/local/bin/permissions-fixup
+    $HOME/.local/bin/permissions-fixup
 }
 
 post() {
@@ -55,7 +55,7 @@ mac() {
     stubby-setdns-macos.sh -l || [ $? -eq 1 ]
 
     brew_install git git-crypt gitleaks
-    ln -sf "$(brew --prefix)/share/git-core/contrib/diff-highlight/diff-highlight" "$HOME/local/bin"
+    ln -sf "$(brew --prefix)/share/git-core/contrib/diff-highlight/diff-highlight" "$HOME/.local/bin"
     git config --global credential.helper osxkeychain
 
     brew_install vim
