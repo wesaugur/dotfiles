@@ -60,7 +60,7 @@ mac() {
     sudo stubby-setdns-macos.sh
     stubby-setdns-macos.sh -l || [ $? -eq 1 ]
 
-    brew_install git git-lfs git-crypt gitleaks
+    brew_install git git-lfs git-crypt gitleaks gh
     ln -sf "$(brew --prefix)/share/git-core/contrib/diff-highlight/diff-highlight" "$HOME/.local/bin"
     git config --global credential.helper osxkeychain
 
