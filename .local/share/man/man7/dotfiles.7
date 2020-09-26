@@ -1,0 +1,100 @@
+'\" t
+.\"     Title: wesaugur/dotfiles
+.\"    Author: Wes Augur
+.\" Generator: Asciidoctor 2.0.10
+.\"      Date: 2020-09-26
+.\"    Manual: Wes Augur Dotfiles Manual
+.\"    Source: Wes Augur Dotfiles
+.\"  Language: English
+.\"
+.TH "DOTFILES" "7" "2020-09-26" "Wes Augur Dotfiles" "Wes Augur Dotfiles Manual"
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.ss \n[.ss] 0
+.nh
+.ad l
+.de URL
+\fI\\$2\fP <\\$1>\\$3
+..
+.als MTO URL
+.if \n[.g] \{\
+.  mso www.tmac
+.  am URL
+.    ad l
+.  .
+.  am MTO
+.    ad l
+.  .
+.  LINKSTYLE blue R < >
+.\}
+.SH "NAME"
+dotfiles \- Wes Augur Dotfiles
+.SH "SYNOPSIS"
+.sp
+\fBdotfiles git\fP \fIGIT\-COMMAND\fP
+.SH "DESCRIPTION"
+.sp
+dotfiles(7) is a shell alias that wraps git(1)
+to simplify managing dotfiles in your home directory.
+.sp
+.if n .RS 4
+.nf
+export DOTFILES_GIT_DIR="$HOME/.dotfiles.git"
+alias dotfiles=\(aqGIT_DIR="$DOTFILES_GIT_DIR" GIT_WORK_TREE="$HOME"\(aq
+.fi
+.if n .RE
+.SH "INSTALLATION"
+.sp
+.if n .RS 4
+.nf
+curl https://wesaugur.sh | sh
+.fi
+.if n .RE
+.SH "UNINSTALLATION"
+.sp
+.if n .RS 4
+.nf
+dotfiles git ls\-files | xargs rm
+rm \-rf "$DOTFILES_GIT_DIR"
+.fi
+.if n .RE
+.SH "EXAMPLES"
+.sp
+\fBdotfiles git\fP \fIstatus\fP
+.RS 4
+Show status of local changes to dotfiles
+.RE
+.sp
+\fBdotfiles git\fP \fIdiff\fP
+.RS 4
+Show diff of local changes to dotfiles
+.RE
+.sp
+\fBdotfiles git\fP \fIadd\fP
+.RS 4
+Add local changes to the git index
+.RE
+.sp
+\fBdotfiles git\fP \fIcommit\fP
+.RS 4
+Record changes to the git repository
+.RE
+.sp
+\fBdotfiles git\fP \fIpush\fP
+.RS 4
+Push local changes to remote git repository
+.RE
+.sp
+\fBdotfiles git\fP \fIpull\fP
+.RS 4
+Pull remote changes into local git repository
+.RE
+.SH "RESOURCES"
+.sp
+.URL "https://wesaugur.sh/~" "" ""
+.SH "SEE ALSO"
+.sp
+git(1)
+.SH "AUTHOR"
+.sp
+Wes Augur

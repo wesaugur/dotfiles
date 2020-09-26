@@ -1,20 +1,51 @@
-# Wes Augur's Dotfiles
+= wesaugur/dotfiles(7)
+Wes Augur
+:doctype: manpage
+:man manual: Wes Augur Dotfiles Manual
+:man source: Wes Augur Dotfiles
 
-## Installation
+== Name
+
+dotfiles - Wes Augur Dotfiles
+
+== Synopsis
+
+*dotfiles git* _GIT-COMMAND_
+
+== Description
+
+dotfiles(7) is a shell alias that wraps git(1)
+to simplify managing dotfiles in your home directory.
+
+[source,shell]
+----
+export DOTFILES_GIT_DIR="$HOME/.dotfiles.git"
+alias dotfiles='GIT_DIR="$DOTFILES_GIT_DIR" GIT_WORK_TREE="$HOME"'
+----
+
+== Installation
 [source,shell]
 ----
 curl https://wesaugur.sh | sh
 ----
 
-## Usage
-[source,shell]
-----
-dotfiles git status
-----
-
-## Uninstallation
+== Uninstallation
 [source,shell]
 ----
 dotfiles git ls-files | xargs rm
 rm -rf "$DOTFILES_GIT_DIR"
 ----
+
+== Examples
+*dotfiles git* _status_    :: Show status of local changes to dotfiles
+*dotfiles git* _diff_      :: Show diff of local changes to dotfiles
+*dotfiles git* _add_       :: Add local changes to the git index
+*dotfiles git* _commit_    :: Record changes to the git repository
+*dotfiles git* _push_      :: Push local changes to remote git repository
+*dotfiles git* _pull_      :: Pull remote changes into local git repository
+
+== Resources
+https://wesaugur.sh/~
+
+== See Also
+git(1)
