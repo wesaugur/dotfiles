@@ -1,6 +1,10 @@
 repos:
 - repo: local
   hooks:
+  - id: gitleaks
+    name: gitleaks
+    entry: gitleaks
+    language: system
   - id: shellcheck
     name: shellcheck
     entry: shellcheck

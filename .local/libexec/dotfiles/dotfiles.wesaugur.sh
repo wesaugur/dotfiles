@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # usage: curl https://dotfiles.wesaugur.sh | sh
-#   src: code.wes.augur.us/dotfiles
+#   src: https://code.wes.augur.us/dotfiles
 
 REPO="dotfiles"
 

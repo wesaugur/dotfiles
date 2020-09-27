@@ -19,8 +19,7 @@ to simplify managing dotfiles in your home directory.
 
 [source,shell]
 ----
-export DOTFILES_GIT_DIR="$HOME/.dotfiles.git"
-alias dotfiles='GIT_DIR="$DOTFILES_GIT_DIR" GIT_WORK_TREE="$HOME"'
+alias dotfiles='GIT_DIR=$HOME/.dotfiles.git GIT_WORK_TREE=$HOME'
 ----
 
 == Installation
@@ -45,7 +44,7 @@ rm -rf "$DOTFILES_GIT_DIR"
 *dotfiles git* _pull_      :: Pull remote changes into local git repository
 
 == Resources
-https://wesaugur.sh/~
+GitHub :: https://wesaugur.sh/~
 
 == See Also
 git(1)

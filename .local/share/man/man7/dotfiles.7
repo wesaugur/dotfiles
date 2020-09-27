@@ -2,12 +2,12 @@
 .\"     Title: wesaugur/dotfiles
 .\"    Author: Wes Augur
 .\" Generator: Asciidoctor 2.0.10
-.\"      Date: 2020-09-26
+.\"      Date: 2020-09-27
 .\"    Manual: Wes Augur Dotfiles Manual
 .\"    Source: Wes Augur Dotfiles
 .\"  Language: English
 .\"
-.TH "DOTFILES" "7" "2020-09-26" "Wes Augur Dotfiles" "Wes Augur Dotfiles Manual"
+.TH "DOTFILES" "7" "2020-09-27" "Wes Augur Dotfiles" "Wes Augur Dotfiles Manual"
 .ie \n(.g .ds Aq \(aq
 .el       .ds Aq '
 .ss \n[.ss] 0
@@ -39,8 +39,7 @@ to simplify managing dotfiles in your home directory.
 .sp
 .if n .RS 4
 .nf
-export DOTFILES_GIT_DIR="$HOME/.dotfiles.git"
-alias dotfiles=\(aqGIT_DIR="$DOTFILES_GIT_DIR" GIT_WORK_TREE="$HOME"\(aq
+alias dotfiles=\(aqGIT_DIR=$HOME/.dotfiles.git GIT_WORK_TREE=$HOME\(aq
 .fi
 .if n .RE
 .SH "INSTALLATION"
@@ -91,7 +90,10 @@ Pull remote changes into local git repository
 .RE
 .SH "RESOURCES"
 .sp
+GitHub
+.RS 4
 .URL "https://wesaugur.sh/~" "" ""
+.RE
 .SH "SEE ALSO"
 .sp
 git(1)
