@@ -13,4 +13,4 @@ export HOMEDIR_GIT_DIR="$HOME/.homedir.git"
 alias homedir='GIT_DIR="$HOMEDIR_GIT_DIR" GIT_WORK_TREE="$HOME"'
 
 export TMUX_SESSION_DEFAULT="BASE"
-[ -n "$TMUX" ] || tmux new -A -s "$TMUX_SESSION_DEFAULT"
+[ -z "$TMUX" ] && tmux new -A -s "$TMUX_SESSION_DEFAULT"

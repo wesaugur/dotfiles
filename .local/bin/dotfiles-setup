@@ -85,10 +85,11 @@ mac() {
 
 pre
 
+# shellcheck disable=SC1091  # Don't follow /etc/os-release
 case $(uname) in
     OpenBSD*) openbsd ;;
     FreeBSD*) freebsd ;;
-    Linux*) case $(FIXME) in
+    Linux*) case $(. /etc/os-release && echo "$NAME") in
         Void*)   void_linux ;;
         Alpine*) alpine_linux ;;
         Debian*) debian_linux ;;
