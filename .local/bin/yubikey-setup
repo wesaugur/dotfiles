@@ -1,0 +1,28 @@
+#!/bin/sh -eux
+
+# Tested on YubiKey 5[C] NFC
+
+ykman info
+
+# NFC Transport
+ykman config nfc --disable-all     && sleep 1
+
+# USB Transport
+ykman config usb --enable-all      && sleep 1
+ykman config usb --disable=OTP     && sleep 1
+ykman config usb --disable=PIV     && sleep 1
+ykman config usb --disable=OATH    && sleep 1
+
+# FIDO Application
+ykman fido info                    && sleep 1
+ykman fido reset                   && sleep 1
+ykman fido set-pin                 && sleep 1
+
+# OpenPGP Application
+ykman openpgp info                 && sleep 1
+ykman openpgp reset                && sleep 1
+# BROKEN:
+# ykman openpgp set-touch SIG FIXED  && sleep 1
+# ykman openpgp set-touch ENC FIXED  && sleep 1
+# ykman openpgp set-touch AUT FIXED  && sleep 1
+# ykman openpgp set-touch ATT FIXED  && sleep 1

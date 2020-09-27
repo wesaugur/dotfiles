@@ -1,0 +1,3 @@
+#!/bin/sh -eu
+
+exec "$HOME/.local/bin/dotfiles-setup"

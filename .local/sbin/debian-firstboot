@@ -1,0 +1,41 @@
+#!/bin/sh
+set -eu
+
+# Quickstart:
+# > su
+# # apt-get update && apt-get --assume-yes install sudo curl
+# # /usr/sbin/usermod -aG sudo $USER
+# # exit
+# > logout
+# > curl -L https://git.io/debian-firstboot | sh 2>&1 | tee -a debian-firstboot.log
+# > curl https://wesaugur.sh | sh 2>&1 | tee -a dotfiles-install.log
+# > chsh -s /usr/bin/fish
+# > logout
+# > dotfiles-fixup
+# > dim_fish_prompt
+# > sudo reboot
+
+
+apt_install_backport() {
+    sudo apt-get -t "$VERSION_CODENAME-backports" --assume-yes install "$@"
+}
+
+set -x
+
+# shellcheck disable=SC1091  # Don't follow /etc/os-release
+. /etc/os-release  # VERSION_CODENAME
+
+sudo tee "/etc/apt/sources.list.d/$VERSION_CODENAME-backports.list" <<-EOF > /dev/null
+	deb https://deb.debian.org/debian $VERSION_CODENAME-backports main
+EOF
+
+sudo apt-get update
+sudo apt-get --assume-yes --auto-remove --purge dist-upgrade
+
+# For Debian 10 (buster)
+apt_install_backport git      # Fixes dotfiles git stash author default
+apt_install_backport fish     # Fixes ancient fish shell
+apt_install_backport tmux     # Fixes '\\' keybinding
+apt_install_backport vim-nox  # Adds python support for org-mode
+
+sudo apt-get clean

@@ -1,0 +1,30 @@
+#!/bin/sh -eux
+
+cat <<-EOF
+	Default Admin PIN: 12345678
+	Default       PIN: 123456
+	--
+	Manually run the following commands in GPG --card-edit CLI:
+	> admin
+	> help
+	> factory-reset
+	> kdf-setup
+	> key-attr
+	>> ECC - Curve 25519
+	> passwd
+	>> 4 - Reset Code
+	>> 3 - Admin PIN
+	>> 1 - PIN
+	>> q
+	> forcesig
+	> login
+	> name
+	> salutation
+	> lang
+	>> en
+	> url
+	>> https://github.com/<USERNAME>.gpg
+	> quit
+EOF
+gpg --card-edit
+gpg --card-status

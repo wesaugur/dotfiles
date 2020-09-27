@@ -1,15 +1,12 @@
 # ~/.gitconfig
 
-# NOTE: Must match with github section in ~/.ssh/config
 [user]
     useConfigOnly = true
-    name  = Wes Augur
+    name = Wes Augur
 
 [alias]
     up = pull --autostash --rebase --stat
     id = config user.email
-    st = status
-    df = diff
     br = branch
     co = checkout
     lg = log --graph --format='%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%ar) %C(blue)<%aN>%Creset'
@@ -25,6 +22,9 @@
 
 [core]
     pager = diff-highlight | $PAGER
+
+[pager]
+    status = true
 
 [diff]
     algorithm = histogram
@@ -50,7 +50,20 @@
 [help]
     autocorrect = -1
 
+[credential]
+    helper = cache
+
+[filter "lfs"]
+    required = true
+    clean    = git-lfs clean -- %f
+    smudge   = git-lfs smudge -- %f
+    process  = git-lfs filter-process
+
+[includeIf "gitdir:~/work/projects/"]
+    path = ~/work/projects/.gitconfig
+
+[includeIf "gitdir:~/work/nonzero/"]
+    path = ~/work/nonzero/.gitconfig
+
 [include]
     path = ~/.gitconfig.local
-
-###

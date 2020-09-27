@@ -1,0 +1,6 @@
+#!/bin/sh -eu
+
+ssh -fN -C -D localhost:1080 "$SSH_SOCKS_URI"
+
+echo "$(tput setaf 3)REMINDER$(tput sgr0)>" \
+        "export ALL_PROXY=socks5://localhost:1080"

@@ -1,0 +1,5 @@
+#!/bin/sh -eu
+
+undodir=$HOME/.vim/undo
+
+find . "$undodir" -user "$USER" -type f -name '.*.un~' -mtime +30 -print -delete

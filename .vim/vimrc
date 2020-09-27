@@ -1,0 +1,164 @@
+" ~/.vim/vimrc
+
+unlet! skip_defaults_vim
+source $VIMRUNTIME/defaults.vim
+
+if has('persistent_undo')
+    set undofile               " historical undo-files (.*.un~)
+    set undodir=~/.vim/undo,.  " centralize undo-files by default
+endif
+
+augroup DefaultGroup       " self-clearing autocmd group
+    autocmd!
+augroup END
+
+set background=dark        " use light-on-dark color scheme
+
+set shortmess+=I           " do not show startup message
+set laststatus=2           " always show status line
+set clipboard=unnamed      " use system clipboard on Mac
+
+set nowrap                 " do not wrap long lines
+set sidescroll=1           " scroll horizontally in 1 column increments
+
+set splitbelow             " put new hsplit windows on the bottom
+set splitright             " put new vsplit windows on the right
+
+set shiftwidth=4           " indent/unindent by 4 spaces
+set softtabstop=4          " tab/backspace use 4 spaces
+set expandtab              " expand tabs to spaces
+set autoindent             " keep new-line indentation at same level
+
+set hlsearch               " highlight search matches
+set ignorecase             " case-insensitive search
+set smartcase              " case-heuristic search
+
+set showmatch              " highlight matching brackets
+set whichwrap=s,b,<,>,[,]  " space, backspace and arrows can cross newlines
+set pastetoggle=<Insert>   " insert toggles paste mode
+
+set wildmode=longest:full,full
+
+set statusline=
+set statusline+=\ %F                " full file path
+set statusline+=%=                  " switch to right-align
+set statusline+=%{exists('g:loaded_gutentags')?gutentags#statusline('[',']'):''}
+set statusline+=[%Y%R%M]            " filetype,readonly,modified
+set statusline+=[%{&fileencoding?&fileencoding:&encoding}]  " file-encoding
+set statusline+=[L%03l:C%02c]       " line:col
+set statusline+=[B%05o/%02p%%/%LL]  " byte-number/percentage/file-length
+
+set listchars=tab:>\ ,trail:~,precedes:<,extends:>,nbsp:+
+set list                   " show non-printable chars
+" autocmd DefaultGroup FileType netrw,gitcommit setlocal nolist
+
+" let mapleader="\<Space>"  " default is '\\'
+" let maplocalleader='\\'   " default is '\\'
+
+let g:netrw_banner=0       " disable header
+let g:netrw_liststyle=3    " tree-style file explorer
+
+set tags+=./.tags;$HOME,.tags;$HOME    " ctags file search
+let g:gutentags_ctags_tagfile='.tags'  " hide ctags file
+
+let g:rooter_silent_chdir=1  " quiet echo cd to project root
+
+autocmd DefaultGroup FileType text setlocal textwidth=78
+autocmd DefaultGroup FileType html set softtabstop=2 shiftwidth=2
+
+autocmd DefaultGroup FocusGained,BufEnter,CursorHold,CursorHoldI * checktime
+
+packadd! matchit  " builtin package that improves %-command
+
+" Make Ctrl-t-* tab actions match Ctrl-w-* window actions
+" Ctrl-t-n opens new tab
+" Ctrl-t-w opens new tab of current window
+" Ctrl-t-c closes current tab
+" Ctrl-t-o closes other tabs
+" Ctrl-t-(Left|Right) navigates tabs
+" Ctrl-Page(Up|Down) navigates tabs by default
+nmap <C-t>  <NOP>
+nmap <C-t>n :tabnew<CR>
+nmap <C-t>w <C-w>T
+nmap <C-t>c :tabclose<CR>
+nmap <C-t>o :tabonly<CR>
+nmap <C-t><Left>  :tabprevious<CR>
+nmap <C-t><Right> :tabnext<CR>
+
+" Ctrl-e opens file explorer
+nmap <C-e> :Explore<CR>
+
+" Ctrl-{Up,Down} scrolls the buffer in the window
+nnoremap <C-Up>   <C-Y>
+nnoremap <C-Down> <C-E>
+
+" Alt-{Up,Down} scrolls the window by pages
+nmap <M-Up>   <PageUp>
+nmap <M-Down> <PageDown>
+
+" Alt-{Left,Right} moves back/forward in jump list
+nmap <M-Left>  <C-O>
+nmap <M-Right> <C-I>
+
+" Space toggles the current fold open/closed
+" nmap <Space> zA
+
+" Enter jumps to the tag under cursor
+" Backspace jumps to the previous tag
+" Ctrl-f searches for a tag
+nmap <CR>  g<C-]>
+nmap <BS>  :pop<CR>
+" nmap <C-f> :tjump<SPACE>
+
+" Ctrl-p searches [git]file names
+" Ctrl-b searches buffers
+" Ctrl-f searches tags
+" Ctrl-g greps files
+nmap <expr> <C-p> len(system('git rev-parse')) ? ':Files<CR>' : ':GitFiles<CR>'
+nmap <C-b> :Buffers<CR>
+nmap <C-f> :Tags<CR>
+nmap <C-g> :Rg<SPACE>
+
+" Ctrl-u lists the undo-branches
+nmap <C-u> :undolist<CR>
+
+" Ctrl-h toggles search result highlighting
+nmap <C-h> :set hlsearch! hlsearch?<CR>
+
+" Ctrl-p toggles non-printable characters
+" nmap <C-p> :set list! list?<CR>
+
+" Ctrl-_ toggles cursor line highlighting
+nmap <C-_> :set cursorline! cursorline?<CR>
+
+" Map common Meta (Alt) keys
+map  <ESC>[1;3A  <M-Up>
+map! <ESC>[1;3A  <M-Up>
+map  <ESC>[1;3B  <M-Down>
+map! <ESC>[1;3B  <M-Down>
+map  <ESC>[1;3C  <M-Right>
+map! <ESC>[1;3C  <M-Right>
+map  <ESC>[1;3D  <M-Left>
+map! <ESC>[1;3D  <M-Left>
+
+" Map common Ctrl keys
+map  <ESC>[1;5A  <C-Up>
+map! <ESC>[1;5A  <C-Up>
+map  <ESC>[1;5B  <C-Down>
+map! <ESC>[1;5B  <C-Down>
+map  <ESC>[1;5C  <C-Right>
+map! <ESC>[1;5C  <C-Right>
+map  <ESC>[1;5D  <C-Left>
+map! <ESC>[1;5D  <C-Left>
+map  <ESC>[2;5~  <C-Insert>
+map! <ESC>[2;5~  <C-Insert>
+map  <ESC>[3;5~  <C-Delete>
+map! <ESC>[3;5~  <C-Delete>
+map  <ESC>[1;5H  <C-Home>
+map! <ESC>[1;5H  <C-Home>
+map  <ESC>[1;5F  <C-End>
+map! <ESC>[1;5F  <C-End>
+map  <ESC>[5;5~  <C-PageUp>
+map! <ESC>[5;5~  <C-PageUp>
+map  <ESC>[6;5~  <C-PageDown>
+map! <ESC>[6;5~  <C-PageDown>

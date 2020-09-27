@@ -1,0 +1,140 @@
+#!/bin/sh
+set -eu
+
+# Quickstart:
+# > for _ in 1 2 3; do
+# >     sudo xbps-install --sync curl
+# > done
+# > curl -L https://git.io/void-firstboot | sh 2>&1 | tee -a void-firstboot.log
+# > curl https://wesaugur.sh | sh 2>&1 | tee -a dotfiles-install.log
+# > chsh -s /bin/fish
+# > logout
+# > dotfiles-fixup
+# > dim_fish_prompt
+# > sudo reboot
+
+# Libreboot BIOS + GPT Partitions:
+# - 1M     BIOS  Boot           no-fs
+# - 2xRAM  Linux Swap           swap
+# - 128G   Linux Root (<arch>)  xfs
+# - 333G   Linux Home           xfs
+
+# Libreboot X200:
+# - "DMAR: Failed to map dmar2" is a non-critical warning
+#   Fix (optional): GRUB kernel boot parameter "intremap=off"
+# - "Machine Check: Processor context corrupt" kernel panic
+#   Fix: Install Intel microcode package (intel-ucode) from nonfree repo
+#        https://docs.voidlinux.org/config/firmware.html#intel
+
+# TODO: Full Disk Encryption - https://docs.voidlinux.org/installation/guides/fde.html
+
+
+usage() {
+    printf 'usage: %s [-F (nonfree)] [-S (xbps-src)] [-M MIRROR]\n' "$0"
+    exit 3
+}
+
+nonfree=false
+xbps_src=false
+mirror=mirrors.servercentral.com/voidlinux
+mirror_default=alpha.de.repo.voidlinux.org
+
+while getopts hFSM: opt; do
+    case $opt in
+        h|\?)  usage ;;
+        F)  nonfree=true ;;
+        S)  xbps_src=true ;;
+        M)  mirror=$OPTARG ;;
+    esac
+done
+shift $((OPTIND-1))
+
+xbps_install() {
+    sudo xbps-install --yes "$@"
+}
+
+set -x
+
+xbps_install --sync
+
+if [ $nonfree = true ]; then
+    xbps_install void-repo-nonfree
+fi
+
+# USA mirror
+sudo cp -a /usr/share/xbps.d/*-repository-*.conf /etc/xbps.d/
+sudo sed -i "s|$mirror_default|$mirror|" /etc/xbps.d/*
+
+for _ in 1 2 3; do
+    xbps_install --sync --update
+done
+
+# Git
+xbps_install git
+
+# xbps-src
+SRC_DIR=/usr/src
+XBPS_SRC_DIR=$SRC_DIR/void-packages
+if [ $xbps_src = true ]; then
+    if [ -d $XBPS_SRC_DIR ]; then
+        $XBPS_SRC_DIR/xbps-src bootstrap-update
+    else
+        sudo git -C $SRC_DIR clone --depth=1 git://github.com/void-linux/void-packages.git
+        echo XBPS_ALLOW_RESTRICTED=yes | sudo tee -a $XBPS_SRC_DIR/etc/conf
+        sudo sed -i "s|$mirror_default|$mirror|" $XBPS_SRC_DIR/etc/xbps.d/*
+        sudo chgrp -R xbuilder $XBPS_SRC_DIR
+        sudo chmod -R g+wX $XBPS_SRC_DIR
+        find $XBPS_SRC_DIR -type d -exec sudo chmod g+s {} +
+        $XBPS_SRC_DIR/xbps-src binary-bootstrap
+    fi
+fi
+
+# XBPS tools
+xbps_install xtools
+
+# USB firewall
+xbps_install usbguard
+sudo mkdir -m 0700 /etc/usbguard/IPCAccessControl.d  # TODO REMOVE: Dir missing from package
+# sudo usbguard add-user --group wheel --devices=ALL --policy=list --exceptions=ALL
+usbguard generate-policy | sudo tee -a /etc/usbguard/rules.conf
+sudo ln -s /etc/sv/usbguard /var/service/ || [ $? -eq 1 ]
+
+# Network firewall
+# xbps_install nftables runit-nftables
+xbps_install ufw
+sudo ufw allow ssh
+sudo ufw enable
+sudo ln -s /etc/sv/ufw /var/service/ || [ $? -eq 1 ]
+
+# NTP alternative
+xbps_install chrony
+sudo ln -s /etc/sv/chronyd /var/service/ || [ $? -eq 1 ]
+
+# cron alternative
+xbps_install snooze
+
+# SSD TRIM
+sudo mkdir -p /etc/cron.weekly
+sudo tee /etc/cron.weekly/fstrim <<-EOF > /dev/null
+	#!/bin/sh
+
+	fstrim --fstab
+EOF
+sudo chmod +x /etc/cron.weekly/fstrim
+
+# GRUB
+sudo sed -i '/GRUB_BACKGROUND/s|^#||' /etc/default/grub
+sudo sed -i '/GRUB_TIMEOUT/s|=[0-9]\+|=1|' /etc/default/grub
+## Default USB authorize internal devices only
+sudo sed -i '/GRUB_CMDLINE_LINUX_DEFAULT/s|"$| usbcore.authorized_default=2"|' /etc/default/grub
+sudo update-grub
+
+# Keymap
+# sudo sed -i '/KEYMAP/s|=us|="us ctrl"|' /etc/rc.conf  # Swaps Caps_Lock//Control
+sudo tee -a /etc/rc.local <<-EOF > /dev/null
+
+	dumpkeys | sed 's|Caps_Lock|Control|' | loadkeys
+EOF
+
+set +x
+echo "[ $(tput setaf 2)OK$(tput sgr0) ] void-firstboot"

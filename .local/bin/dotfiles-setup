@@ -1,0 +1,198 @@
+#!/bin/sh -eux
+
+dotfiles() {
+    GIT_DIR="$HOME/.dotfiles.git" GIT_WORK_TREE="$HOME" "$@"
+}
+
+pre() {
+    "$HOME/.local/bin/permissions-fixup"
+}
+
+post() {
+    # https://github.com/simonthum/git-sync
+    git_sync="/usr/local/bin/git-sync"
+    sudo curl -#L https://github.com/simonthum/git-sync/raw/master/git-sync \
+              --output "$git_sync"
+    sudo chmod +x "$git_sync"
+
+    fish -c fish_update_completions
+    pkill -u "$USER" ssh-agent
+
+    set +x
+
+    for vim_pack in \
+        tpope/vim-sensible tpope/vim-vinegar tpope/vim-commentary \
+        ludovicchabant/vim-gutentags ackyshake/VimCompletesMe \
+        junegunn/fzf.vim airblade/vim-rooter \
+        jceb/vim-orgmode tpope/vim-speeddating
+    do
+        (set -x; "$HOME/.local/bin/vim-pack-install" $vim_pack) || [ $? -eq 128 ]
+    done
+    git -C "$HOME/.vim/pack/git-packages" recursive pull
+
+    echo "[ $(tput setaf 2)OK$(tput sgr0) ] dotfiles-setup"
+    echo "$(tput setaf 3)REMINDER$(tput sgr0)> exec \$SHELL --login"
+
+    fish="$(command -v fish)" && [ "$SHELL" != "$fish" ] && \
+        echo "$(tput setaf 3)REMINDER$(tput sgr0)> chsh -s $fish"
+
+    git config user.email > /dev/null || \
+        echo "$(tput setaf 3)REMINDER$(tput sgr0)> git id"
+}
+
+openbsd() {
+    return  # TODO
+}
+
+freebsd() {
+    return  # TODO
+}
+
+void_linux() {
+    xbps_install() {
+        sudo xbps-install --yes "$@"
+    }
+
+    xbps_install --sync
+
+    xbps_install curl make
+    xbps_install git git-lfs git-crypt
+    xbps_install fish-shell direnv vim tmux python3
+    xbps_install htop pv moreutils bash-completion ctags fzf fd tree ripgrep
+    xbps_install gnupg2 && (cd /usr/bin ; [ -e gpg ] || sudo ln -s gpg2 gpg)
+    xbps_install gnupg2-scdaemon pcsclite pcsc-ccid && \
+            { sudo ln -s /etc/sv/pcscd /var/service/ || [ $? -eq 1 ] ; }
+    xbps_install signify age
+    # xbps_install magic-wormhole
+
+    fish_vendor_functions_d="$(pkg-config --variable=functionsdir fish)"
+    mkdir -p "$fish_vendor_functions_d"
+    ln -s "/usr/share/doc/fzf/key-bindings.fish" \
+            "$fish_vendor_functions_d/fzf_key_bindings.fish" || [ $? -eq 1 ]
+    bash_completions_d="$(pkg-config --variable=completionsdir bash-completion)"
+    ln -s "/usr/share/doc/fzf/completion.bash" \
+            "$bash_completions_d/fzf" || [ $? -eq 1 ]
+}
+
+debian_linux() {
+    apt_install() {
+        sudo apt-get install --assume-yes "$@"
+    }
+
+    sudo apt-get update
+
+    apt_install curl make
+    apt_install git git-lfs git-crypt
+    apt_install fish direnv vim tmux python3
+    apt_install htop pv moreutils bash-completion ctags fzf fd-find tree ripgrep
+    apt_install gnupg scdaemon
+    apt_install signify-openbsd # age  # TODO: in Debian 11
+    # apt_install magic-wormhole
+
+    sudo ln -s "$(command -v fdfind)" /usr/local/bin/fd || [ $? -eq 1 ]
+
+    diff_highlight_dir=/usr/share/doc/git/contrib/diff-highlight
+    sudo make -C "$diff_highlight_dir"
+    sudo ln -sf "$diff_highlight_dir/diff-highlight" /usr/local/bin
+
+    vimfiles_dir=/usr/share/vim/vimfiles
+    sudo mkdir -p "$vimfiles_dir/plugin"
+    sudo ln -s /usr/share/doc/fzf/examples/plugin/fzf.vim \
+            "$vimfiles_dir/plugin" || [ $? -eq 1 ]
+}
+
+mac() {
+    command -v brew || \
+    bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+    brew update
+    brew analytics off
+
+    brew_install() {
+        brew list --versions "$@" || brew install "$@"
+    }
+
+    brew_cask_install() {
+        brew list --versions --cask "$@" || brew install --cask "$@"
+    }
+
+    # MacOS avoids GPLv3
+    brew_install bash
+    brew_bash="$(brew --prefix)/bin/bash"
+    grep "$brew_bash" /etc/shells || echo "$brew_bash" | sudo tee -a /etc/shells
+
+    brew_install git git-lfs git-crypt
+    ln -sf "$(brew --prefix)/share/git-core/contrib/diff-highlight/diff-highlight" \
+            /usr/local/bin
+    git config --file="$HOME/.gitconfig.local" credential.helper osxkeychain
+
+    brew_install fish
+    fish="$(command -v fish)"
+    grep "$fish" /etc/shells || echo "$fish" | sudo tee -a /etc/shells
+
+    brew_install direnv vim tmux python
+    brew_install htop pv moreutils bash-completion@2 ctags fzf fd tree ripgrep
+    brew_install gnupg
+    brew_install signify-osx
+
+    fish_vendor_functions_d="$(pkg-config --variable=functionsdir fish)"
+    mkdir -p "$fish_vendor_functions_d"
+    ln -s "$(brew --prefix)/opt/fzf/shell/key-bindings.fish" \
+            "$fish_vendor_functions_d/fzf_key_bindings.fish" || [ $? -eq 1 ]
+    bash_completions_d="$(pkg-config --variable=completionsdir bash-completion)"
+    ln -s "$(brew --prefix)/opt/fzf/shell/completion.bash" \
+            "$bash_completions_d/fzf" || [ $? -eq 1 ]
+    vimfiles_dir="$(brew --prefix)/share/vim/vimfiles"
+    mkdir -p "$vimfiles_dir/plugin"
+    ln -s "$(brew --prefix)/opt/fzf/plugin/fzf.vim" \
+            "$vimfiles_dir/plugin" || [ $? -eq 1 ]
+
+    brew tap filippo.io/age https://filippo.io/age
+    brew_install age  # https://age-encryption.org/
+
+    brew_install magic-wormhole
+
+    brew_cask_install kitty
+
+    brew_cask_install sublime-text
+    brew_cask_install sublime-merge
+    ln -snf "$HOME/.config/sublime-text-3" \
+            "$HOME/Library/Application Support/Sublime Text 3"
+
+    # TODO: MacOS (>= 11) DNS-over-TLS via Profiles
+    # https://github.com/paulmillr/encrypted-dns
+
+    # Stubby: DNS-over-TLS
+    # FIXME: stubby has high latency
+    # brew_install stubby
+    # sudo brew services start stubby
+    # stubby_setdns_macos="$(brew --prefix)/sbin/stubby-setdns-macos.sh"
+    # $stubby_setdns_macos -l || [ $? -eq 1 ]
+    # sudo $stubby_setdns_macos
+    # $stubby_setdns_macos -l || [ $? -eq 1 ]
+
+    brew cleanup
+    brew doctor || [ $? -eq 1 ]
+}
+
+unsupported() {
+    set +x
+    echo "[ $(tput setaf 1)ERROR$(tput sgr0) ] OS not supported"
+    exit 1
+}
+
+pre
+
+# shellcheck disable=SC1091  # Don't follow /etc/os-release
+case $(uname) in
+    # OpenBSD*) openbsd ;;
+    # FreeBSD*) freebsd ;;
+    Linux*) case $(. /etc/os-release && echo "$ID") in
+        void*)   void_linux ;;
+        debian*) debian_linux ;;
+    esac ;;
+    Darwin*)  mac ;;
+    *)        unsupported ;;
+esac
+
+post

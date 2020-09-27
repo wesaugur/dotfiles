@@ -1,0 +1,3 @@
+#!/bin/sh -eux
+
+REPO=homedir "$HOME/.local/bin/git-clone-home"

@@ -1,0 +1,3 @@
+#!/bin/sh -eux
+
+exec sudo tar -cvpz -f "home-$USER-$(date -u '+%FT%TZ').tar.gz" -C "$(dirname "$HOME")" "$USER"

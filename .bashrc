@@ -1,66 +1,48 @@
 # ~/.bashrc
+# shellcheck shell=bash
+# shellcheck disable=SC2034  # Unused variables
+# shellcheck disable=SC2153  # Possible misspelling
+# shellcheck disable=SC1090  # Don't follow non-constant source
 
-export PATH=~/local/bin:$PATH
+# Bash Completion
+for prefix in /usr $(command -v brew > /dev/null && brew --prefix) ; do
+    bash_completion_sh="$prefix/share/bash-completion/bash_completion"
+    [ -r "$bash_completion_sh" ] && source "$bash_completion_sh" && break
+done
 
-export EDITOR=vim
-export PAGER=less-color; export LESS="iFRX"
+# Git Prompt
+for git_prompt_sh in /usr/share/git/git-prompt.sh /usr/lib/git-core/git-sh-prompt ; do
+    [ -r "$git_prompt_sh" ] && source "$git_prompt_sh" && break
+done
 
-export DOTFILES_GIT_DIR="$HOME/.dotfiles.git"
-alias dotfiles='GIT_DIR="$DOTFILES_GIT_DIR" GIT_WORK_TREE="$HOME"'
+# FZF Key-Bindings
+for prefix in \
+    /usr/share/doc/fzf \
+    /usr/share/doc/fzf/examples \
+    $(command -v brew > /dev/null && brew --prefix)/opt/fzf/shell
+do
+    fzf_key_bindings_bash="$prefix/key-bindings.bash"
+    [ -r "$fzf_key_bindings_bash" ] && source "$fzf_key_bindings_bash" && break
+done
 
-export HOMEDIR_GIT_DIR="$HOME/.homedir.git"
-alias homedir='GIT_DIR="$HOMEDIR_GIT_DIR" GIT_WORK_TREE="$HOME"'
+# Color Constants
+colors_file="$HOME/.local/share/colors.sh"
+[ -f "$colors_file" ] && source "$colors_file"
 
-case $(uname) in
-    Linux*)
-        alias ls="ls -F --color=auto"
-        ;;
-    Darwin*)  # Mac +Homebrew
-        alias ls="ls -FG"
-        export PATH=$(brew --prefix)/sbin:$(brew --prefix)/bin:$PATH
-        export BASH_COMPLETION_COMPAT_DIR="$(brew --prefix)/etc/bash_completion.d"
-        BASH_COMPLETION_SH="$(brew --prefix)/etc/profile.d/bash_completion.sh"
-        [ -r "$BASH_COMPLETION_SH" ] && source "$BASH_COMPLETION_SH"
-        ;;
-esac
-
-alias ll="ls -alh"
-alias v="vim"
-alias d="dotfiles"
-alias h="homedir"
-alias g="git";          __git_complete g  _git
-alias gu="git up";      __git_complete gu _git_pull
-alias gs="git status";  __git_complete gs _git_status
-alias gd="git diff";    __git_complete gd _git_diff
-alias ga="git add";     __git_complete ga _git_add
-alias gp="gitleaks -v --repo=. && git push";  __git_complete gp _git_push
-alias gsr="git recursive status"
-alias ts='tmux attach -t "$TMUX_SESSION_DEFAULT" || tmux new -s "$TMUX_SESSION_DEFAULT"'
-
-alias grep="grep --line-number --color=auto"
-
-### Foreground Colors       Bash Prompt Escaped Colors
-C_BLACK=$(tput setaf 0);    P_BLACK="\[$C_BLACK\]"
-C_RED=$(tput setaf 1);      P_RED="\[$C_RED\]"
-C_GREEN=$(tput setaf 2);    P_GREEN="\[$C_GREEN\]"
-C_YELLOW=$(tput setaf 3);   P_YELLOW="\[$C_YELLOW\]"
-C_BLUE=$(tput setaf 4);     P_BLUE="\[$C_BLUE\]"
-C_MAGENTA=$(tput setaf 5);  P_MAGENTA="\[$C_MAGENTA\]"
-C_CYAN=$(tput setaf 6);     P_CYAN="\[$C_CYAN\]"
-C_WHITE=$(tput setaf 7);    P_WHITE="\[$C_WHITE\]"
-C_HI_BLACK=$(tput setaf 8); P_HI_BLACK="\[$C_HI_BLACK\]"
-
-C_RESET=$(tput sgr0);       P_RESET="\[$C_RESET\]"
-
-C_BOLD=$(tput bold);        P_BOLD="\[$C_BOLD\]"
-C_UNDERLINE=$(tput smul);   P_UNDERLINE="\[$C_UNDERLINE\]"
-C_REVERSE=$(tput rev);      P_REVERSE="\[$C_REVERSE\]"
+### Foreground Bash Prompt Escaped Colors
+P_GREEN="\[$C_GREEN\]"
+P_HI_BLACK="\[$C_HI_BLACK\]"
+P_RESET="\[$C_RESET\]"
 
 ### Prompt
-GIT_PS1_SHOWUPSTREAM=auto
+GIT_PS1_SHOWCOLORHINTS=true
 GIT_PS1_SHOWDIRTYSTATE=true
 GIT_PS1_SHOWSTASHSTATE=true
-GIT_PS1_SHOWCOLORHINTS=true
 GIT_PS1_SHOWUNTRACKEDFILES=true
+GIT_PS1_SHOWUPSTREAM=auto
 
-PROMPT_COMMAND='__git_ps1 "$P_HI_BLACK\u@\h$P_RESET $P_BOLD\w$P_RESET" "$P_HI_BLACK>$P_RESET "'
+PROMPT_COMMAND='__git_ps1 "$P_HI_BLACK\u@\h$P_RESET $P_GREEN\w$P_RESET" "$P_HI_BLACK>$P_RESET "'
+
+[ -f "$ENV" ] && source "$ENV"  # ~/.shrc
+
+[ -f ~/.bashrc.local ] && source ~/.bashrc.local

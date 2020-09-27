@@ -1,0 +1,11 @@
+#!/bin/sh -eu
+
+chmod -vv o= "$HOME"
+
+for dir in ~/.ssh ~/.pgp ~/.gnupg ~/.tarsnap
+do
+    [ -d "$dir" ] || continue
+    chown -R "$(id -un):$(id -gn)" "$dir"
+    find "$dir" -type d -exec chmod -vv 0700 {} \;
+    find "$dir" -type f -exec chmod -vv 0600 {} \;
+done

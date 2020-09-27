@@ -2,4 +2,6 @@
 
 # Vim
 .*.sw[a-p]
+.*.un~
 *~
+.tags

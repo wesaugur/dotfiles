@@ -1,0 +1,55 @@
+#!/bin/sh -eu
+
+usage() {
+    printf 'usage: %s [-n FULL-NAME] [-e EMAIL] [-d DATE] [-f OUT-FILE]\n' "$0"
+    exit 3
+}
+
+# shellcheck disable=SC2015  # A && B || C is not if-then-else
+name=$(command -v getent > /dev/null && getent passwd "$USER" | cut -d: -f5 | cut -d, -f1 || id -F)
+email="$USER@$(uname -n | cut -d. -f1)"
+date=$(date -u '+%Y%m%d')
+
+while getopts hn:e:d:f: opt; do
+    case $opt in
+        h|\?)  usage ;;
+        n)  name=$OPTARG ;;
+        e)  email=$OPTARG ;;
+        d)  date=$OPTARG ;;
+        f)  output_file=$OPTARG ;;
+    esac
+done
+shift $((OPTIND-1))
+
+output_file=${output_file:-"$email-$date-gpg"}
+
+export GNUPGHOME="$PWD/$output_file.gnupg"
+mkdir -m 0700 "$GNUPGHOME"
+umask 0077
+
+gpg_fingerprint=$(gpg --status-file=/dev/stdout \
+        --quick-gen-key "$name <$email>" ed25519 default never \
+    | grep KEY_CREATED | cut -d' ' -f4)
+gpg --output="$GNUPGHOME/$output_file-master-key.sec"      --export-secret-keys    --armor
+gpg --quick-add-key "$gpg_fingerprint" ed25519 sign never
+gpg --quick-add-key "$gpg_fingerprint" cv25519 encr never
+gpg --quick-add-key "$gpg_fingerprint" ed25519 auth never
+gpg --output="$GNUPGHOME/$output_file.pub"                 --export                --armor
+gpg --output="$GNUPGHOME/$output_file-ssh.pub"             --export-ssh-key "$email"
+gpg --output="$GNUPGHOME/$output_file-master+sub-keys.sec" --export-secret-keys    --armor
+gpg --output="$GNUPGHOME/$output_file-sub-keys.sec"        --export-secret-subkeys --armor
+gpg --export-ownertrust > "$GNUPGHOME/$output_file-ownertrust.sec"
+gpg --fingerprint --with-subkey-fingerprint --with-keygrip \
+    | tee -a "$GNUPGHOME/$output_file.fingerprint"
+
+cat <<-EOF
+	IMPORTANT: Backup $GNUPGHOME
+
+	Import only sub-keys into local keychain:
+	> cd $GNUPGHOME
+	> gpg --import $output_file-sub-keys.sec
+	> gpg --import-ownertrust < $output_file-ownertrust.sec
+
+	To use master key:
+	> export GNUPGHOME="$GNUPGHOME"
+EOF

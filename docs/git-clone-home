@@ -1,0 +1,30 @@
+#!/bin/sh
+
+# usage: curl https://wesaugur.sh | sh
+#   src: https://code.wes.augur.us/~/.local/bin/git-clone-home
+
+GITHUB_USER=${GITHUB_USER:-wesaugur}
+REPO=${REPO:-dotfiles}
+GIT_URL=${GIT_URL:-https://github.com/$GITHUB_USER/$REPO.git}
+
+skip_files="$HOME/LICENSE $HOME/docs"
+
+set -eu
+export GIT_DIR="$HOME/.$REPO.git"  # git magic env-var
+tmp_work_tree="$HOME/.$REPO.tmp"
+
+git clone --quiet "$GIT_URL" --separate-git-dir="$GIT_DIR" "$tmp_work_tree"
+
+export GIT_WORK_TREE="$HOME"  # git magic env-var
+git checkout-index --all || { [ $? -eq 128 ] && \
+    git stash push --message="Pre-Existing Dotfiles (auto-stashed)" && \
+    git --no-pager stash show --name-status ; }
+git config --local status.showUntrackedFiles no
+# shellcheck disable=SC2086  # $skip_files list not double quoted
+git ls-files $skip_files | xargs git update-index --skip-worktree
+# shellcheck disable=SC2086  # $skip_files list not double quoted
+rm -rf "$tmp_work_tree" $skip_files
+unset GIT_DIR GIT_WORK_TREE
+
+POST_INSTALL="$HOME/.local/libexec/$REPO.post-install"
+[ -x "$POST_INSTALL" ] && $POST_INSTALL

@@ -1,0 +1,28 @@
+#!/bin/sh -eu
+
+git_url_base=git://github.com
+vim_pack_dir=$HOME/.vim/pack/git-packages/start
+
+usage() {
+    printf 'usage: %s [-b GIT-URL-BASE (%s)] GIT-URL-PATH\n' "$0" "$git_url_base"
+    exit 3
+}
+
+while getopts hb: opt; do
+    case $opt in
+        h|\?)  usage ;;
+        b)     git_url_base=$OPTARG ;;
+    esac
+done
+shift $((OPTIND-1))
+
+[ $# -eq 1 ] || usage
+
+git_url_path=$1
+shift 1
+
+git_url=$git_url_base/$git_url_path
+
+mkdir -p "$vim_pack_dir"
+git -C "$vim_pack_dir" clone --quiet --depth=1 "$git_url"
+vim -T builtin_dumb -c "silent! helptags ALL" -c "q" > /dev/null 2>&1

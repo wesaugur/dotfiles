@@ -1,0 +1,6 @@
+#!/bin/sh -eu
+
+ssh-socks-ifstat
+pkill -fl "ssh.+localhost:1080.+$SSH_SOCKS_URI"
+
+echo "$(tput setaf 3)REMINDER$(tput sgr0)> unset ALL_PROXY"

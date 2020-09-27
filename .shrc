@@ -1,0 +1,54 @@
+# ~/.shrc ($ENV)
+# vi: filetype=sh
+# shellcheck shell=sh
+# COMPATIBILITY: POSIX sh, bash, ksh, zsh, fish
+
+export PS1='$USER@$(uname -n | cut -d. -f1) $(pwd | sed "s|^$HOME|~|")> '
+
+# shellcheck disable=SC2015  # A && B || C is not if-then-else
+[ "$FISH_VERSION" ] && \
+    eval 'set ls_color_flag  (ls --color > /dev/null 2>&1 && echo --color=auto || echo -G)' || \
+    eval     'ls_color_flag=$(ls --color > /dev/null 2>&1 && echo --color=auto || echo -G)'
+
+# shellcheck disable=SC2154  # $ls_color_flag is unassigned
+# shellcheck disable=SC2139  # Expand at definition
+alias ls="ls -F $ls_color_flag"
+# shellcheck disable=SC2139  # Expand at definition
+alias ll="ls -lhAF $ls_color_flag"
+
+alias dotfiles='GIT_DIR="$DOTFILES_GIT_DIR" GIT_WORK_TREE="$HOME"'
+alias  homedir='GIT_DIR="$HOMEDIR_GIT_DIR"  GIT_WORK_TREE="$HOME"'
+
+type abbr_alias > /dev/null 2>&1 || alias abbr_alias=alias
+
+abbr_alias d='dotfiles'
+abbr_alias h='homedir'
+
+abbr_alias v='vim'
+
+# shellcheck disable=SC2016  # Expand at runtime
+abbr_alias p='$PAGER'
+
+abbr_alias   g='git'
+abbr_alias  gu='git up'
+abbr_alias  gs='git status'
+abbr_alias gsv='git status --verbose'
+abbr_alias  gd='git diff'
+abbr_alias gds='git diff --staged'
+abbr_alias  ga='git add'
+abbr_alias gap='git add --patch'
+abbr_alias gsr='git recursive status'
+
+abbr_alias tsms='ts %.T'
+abbr_alias tsdt="ts '%F %.T'"
+
+# shellcheck disable=SC2016  # Expand at dereference
+abbr_alias tt='exec tmux new -A -s "$TMUX_SESSION_NAME"'
+
+[   "$FISH_VERSION" ] && command -v direnv > /dev/null && \
+    eval 'direnv hook fish | source'
+[ ! "$FISH_VERSION" ] && command -v direnv > /dev/null && \
+    eval 'eval "$(direnv hook $0)"'
+
+# shellcheck disable=SC1090  # Don't follow $ENV.local
+[ -f "$ENV.local" ] && . "$ENV.local"  # ~/.shrc.local

@@ -1,0 +1,7 @@
+#!/bin/sh -eu
+
+git_args=${*:-status}
+
+find . -name '.git' -exec sh -c \
+        'repo=$(dirname ${1}) && echo ${repo} && cd ${repo} && git ${2} && printf "\n"' \
+        _ {} "${git_args}" \;

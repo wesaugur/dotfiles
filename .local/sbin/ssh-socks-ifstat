@@ -1,0 +1,6 @@
+#!/bin/sh -eu
+
+
+pgrep -fl "ssh.+localhost:1080.+$SSH_SOCKS_URI"
+
+env | grep -i proxy

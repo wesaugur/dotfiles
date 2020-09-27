@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<!-- This is an automatically generated file.  Do not edit.
+   t
+       Title: wesaugur/dotfiles
+      Author: Wes Augur
+   Generator: Asciidoctor 2.0.12
+        Date: 2021-01-14
+      Manual: Wes Augur Dotfiles Manual
+      Source: Wes Augur Dotfiles
+    Language: English
+   -->
+<head>
+  <meta charset="utf-8"/>
+  <link rel="stylesheet" href="https://wesaugur.sh/mandoc.css" type="text/css" media="all"/>
+  <title>DOTFILES(7)</title>
+</head>
+<body>
+<table class="head">
+  <tr>
+    <td class="head-ltitle">DOTFILES(7)</td>
+    <td class="head-vol">Wes Augur Dotfiles Manual</td>
+    <td class="head-rtitle">DOTFILES(7)</td>
+  </tr>
+</table>
+<div class="manual-text">
+<section class="Sh">
+<h1 class="Sh" id="NAME"><a class="permalink" href="#NAME">NAME</a></h1>
+dotfiles - Wes Augur Dotfiles
+</section>
+<section class="Sh">
+<h1 class="Sh" id="SYNOPSIS"><a class="permalink" href="#SYNOPSIS">SYNOPSIS</a></h1>
+<b>dotfiles git</b> <i>GIT-COMMAND</i>
+</section>
+<section class="Sh">
+<h1 class="Sh" id="DESCRIPTION"><a class="permalink" href="#DESCRIPTION">DESCRIPTION</a></h1>
+dotfiles(7) is a shell alias that wraps git(1) to simplify managing dotfiles in
+  your home directory.
+<p class="Pp"></p>
+<div class="Bd-indent">
+<pre>
+alias dotfiles='GIT_DIR=$HOME/.dotfiles.git GIT_WORK_TREE=$HOME'
+</pre>
+</div>
+</section>
+<section class="Sh">
+<h1 class="Sh" id="INSTALLATION"><a class="permalink" href="#INSTALLATION">INSTALLATION</a></h1>
+<div class="Bd-indent">
+<pre>
+curl https://wesaugur.sh | sh
+</pre>
+</div>
+</section>
+<section class="Sh">
+<h1 class="Sh" id="UNINSTALLATION"><a class="permalink" href="#UNINSTALLATION">UNINSTALLATION</a></h1>
+<div class="Bd-indent">
+<pre>
+dotfiles git ls-files | xargs rm
+rm -rf &quot;$DOTFILES_GIT_DIR&quot;
+</pre>
+</div>
+</section>
+<section class="Sh">
+<h1 class="Sh" id="EXAMPLES"><a class="permalink" href="#EXAMPLES">EXAMPLES</a></h1>
+<b>dotfiles git</b> <i>status</i>
+<div class="Bd-indent">Show status of local dotfile changes</div>
+<p class="Pp"><b>dotfiles git</b> <i>diff</i></p>
+<div class="Bd-indent">Show diff of local dotfile changes</div>
+<p class="Pp"><b>dotfiles git</b> <i>add</i></p>
+<div class="Bd-indent">Add local dotfile changes to the git index</div>
+<p class="Pp"><b>dotfiles git</b> <i>commit</i></p>
+<div class="Bd-indent">Record dotfile changes to the git repository</div>
+<p class="Pp"><b>dotfiles git</b> <i>push</i></p>
+<div class="Bd-indent">Push local dotfile changes to remote git repository</div>
+<p class="Pp"><b>dotfiles git</b> <i>pull</i></p>
+<div class="Bd-indent">Pull remote dotfile changes into local git
+  repository</div>
+<p class="Pp"><b>dotfiles-setup</b></p>
+<div class="Bd-indent">Re-run the setup script</div>
+<p class="Pp"><b>dotfiles-fixup</b></p>
+<div class="Bd-indent">Fix common dotfile errors</div>
+</section>
+<section class="Sh">
+<h1 class="Sh" id="RESOURCES"><a class="permalink" href="#RESOURCES">RESOURCES</a></h1>
+Installer
+<div class="Bd-indent"><i></i> &lt;https://wesaugur.sh&gt;</div>
+<p class="Pp">Manpage</p>
+<div class="Bd-indent"><i></i> &lt;https://wesaugur.sh/man&gt;</div>
+<p class="Pp">GitHub</p>
+<div class="Bd-indent"><i></i> &lt;https://code.wes.augur.us/~&gt;
+<br/>
+<i></i> &lt;https://code.wes.augur.us/~/&lt;DOTFILE&gt;&gt;</div>
+</section>
+<section class="Sh">
+<h1 class="Sh" id="SEE_ALSO"><a class="permalink" href="#SEE_ALSO">SEE
+  ALSO</a></h1>
+git(1)
+</section>
+<section class="Sh">
+<h1 class="Sh" id="AUTHOR"><a class="permalink" href="#AUTHOR">AUTHOR</a></h1>
+Wes Augur
+</section>
+</div>
+<table class="foot">
+  <tr>
+    <td class="foot-date">2021-01-14</td>
+    <td class="foot-os">Wes Augur Dotfiles</td>
+  </tr>
+</table>
+</body>
+</html>

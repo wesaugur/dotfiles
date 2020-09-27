@@ -1,0 +1,17 @@
+#!/bin/sh -eu
+# shellcheck disable=SC1090  # Don't follow non-constant source
+
+colors_file="$HOME/.local/share/colors.sh"
+[ -f "$colors_file" ] && . "$colors_file"
+
+SECTION=${C_YELLOW}
+CMD=${C_WHITE}
+ARG=${C_CYAN}
+OPT=${C_HI_BLACK}
+
+exec cat << EOF
+${SECTION}Movement${C_RESET}
+... TODO
+
+${CMD}:h${OPT}[elp] ${ARG}quickref${C_RESET}
+EOF

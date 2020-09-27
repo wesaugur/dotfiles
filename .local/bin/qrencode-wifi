@@ -1,0 +1,21 @@
+#!/bin/sh -eu
+
+usage() {
+    printf 'usage: %s <SSID> <WPA-PSK> [<QRENCODE-OPTIONS>]\n' "$0"
+    exit 3
+}
+
+[ $# -ge 2 ] || usage
+
+ssid=$1
+wpa_psk=$2
+shift 2
+
+# As of iOS 14, iPhones won't join Wi-Fi via NFC.
+# Alternative is NFC NDEF URL to .mobileconfig
+# generated with Mac App "Apple Configurator 2".
+
+# https://github.com/zxing/zxing/wiki/Barcode-Contents#wi-fi-network-config-android-ios-11
+data="WIFI:T:WPA;S:$ssid;P:$wpa_psk;;"
+
+qrencode -o "WiFi-QR-$ssid.png" "$@" "$data"

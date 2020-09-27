@@ -1,0 +1,5 @@
+#!/bin/sh
+
+pkill -u "$USER" ssh-agent
+
+echo "$(tput setaf 3)SUGGESTION$(tput sgr0)> source ~/.profile"

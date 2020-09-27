@@ -1,0 +1,6 @@
+#!/bin/sh -eu
+
+git config user.email && exit
+
+printf "git user.email> " && read -r git_user_email && [ "$git_user_email" ] && \
+git config --file="$HOME/.gitconfig.local" user.email "$git_user_email"

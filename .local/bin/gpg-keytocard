@@ -1,0 +1,31 @@
+#!/bin/sh -eu
+
+cat <<-EOF
+	Manually copy sub-keys onto smartcard:
+	- Unplug/replug smartcard if 'card not available'
+	> key 1
+	> keytocard
+	> key
+	> key 2
+	> keytocard
+	> key
+	> key 3
+	> keytocard
+	> quit
+	- Quit WITHOUT saving - copies keys onto smartcard
+	- Quit WITH    saving - moves  keys onto smartcard
+EOF
+
+gpg_fingerprint=$(gpg --fingerprint | grep --only-matching '<.*>')
+gpg --edit-key "$gpg_fingerprint"
+
+cat <<-EOF
+	To use smartcard on another computer:
+	> gpg --card-status
+	> gpg --card-edit
+	>> fetch
+	>> quit
+	> gpg --edit-key <EMAIL>
+	>> trust
+	>> quit
+EOF
