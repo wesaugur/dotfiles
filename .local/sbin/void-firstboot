@@ -78,21 +78,16 @@ set -eu
 
 
 usage() {
-    printf 'usage: %s [-F (nonfree)] [-S (xbps-src)] [-M MIRROR]\n' "$0"
+    printf 'usage: %s [-F (nonfree)]\n' "$0"
     exit 3
 }
 
 nonfree=false
-xbps_src=false
-mirror=mirrors.servercentral.com/voidlinux
-mirror_default=alpha.de.repo.voidlinux.org
 
-while getopts hFSM: opt; do
+while getopts hF opt; do
     case $opt in
         h|\?)  usage ;;
         F)  nonfree=true ;;
-        S)  xbps_src=true ;;
-        M)  mirror=$OPTARG ;;
     esac
 done
 shift $((OPTIND-1))
@@ -103,15 +98,9 @@ xbps_install() {
 
 set -x
 
-xbps_install --sync
-
 if [ $nonfree = true ]; then
     xbps_install void-repo-nonfree
 fi
-
-# USA mirror
-sudo cp -a /usr/share/xbps.d/*-repository-*.conf /etc/xbps.d/
-sudo sed -i "s|$mirror_default|$mirror|" /etc/xbps.d/*
 
 for _ in 1 2 3; do
     xbps_install --sync --update
@@ -119,23 +108,6 @@ done
 
 # Git
 xbps_install git
-
-# xbps-src
-SRC_DIR=/usr/src
-XBPS_SRC_DIR=$SRC_DIR/void-packages
-if [ $xbps_src = true ]; then
-    if [ -d $XBPS_SRC_DIR ]; then
-        $XBPS_SRC_DIR/xbps-src bootstrap-update
-    else
-        sudo git -C $SRC_DIR clone --depth=1 git://github.com/void-linux/void-packages.git
-        echo XBPS_ALLOW_RESTRICTED=yes | sudo tee -a $XBPS_SRC_DIR/etc/conf
-        sudo sed -i "s|$mirror_default|$mirror|" $XBPS_SRC_DIR/etc/xbps.d/*
-        sudo chgrp -R xbuilder $XBPS_SRC_DIR
-        sudo chmod -R g+wX $XBPS_SRC_DIR
-        find $XBPS_SRC_DIR -type d -exec sudo chmod g+s {} +
-        $XBPS_SRC_DIR/xbps-src binary-bootstrap
-    fi
-fi
 
 # XBPS tools
 xbps_install xtools

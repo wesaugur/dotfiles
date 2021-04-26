@@ -8,7 +8,7 @@ if [ -x $XBPS_SRC_DIR/xbps-src ]; then
 else
     sudo git -C $SRC_DIR clone --depth=1 git://github.com/void-linux/void-packages.git
     echo XBPS_ALLOW_RESTRICTED=yes | sudo tee -a $XBPS_SRC_DIR/etc/conf
-    $HOME/.local/sbin/void-repo-mirror-setup
+    command -v void-repo-mirror-setup && void-repo-mirror-setup
     sudo chgrp -R xbuilder $XBPS_SRC_DIR
     sudo chmod -R g+wX $XBPS_SRC_DIR
     find $XBPS_SRC_DIR -type d -exec sudo chmod g+s {} +
