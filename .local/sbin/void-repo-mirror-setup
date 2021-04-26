@@ -1,5 +1,7 @@
 #!/bin/sh -eu
 
+# https://docs.voidlinux.org/xbps/repositories/mirrors/changing.html
+
 mirror=mirrors.servercentral.com/voidlinux
 mirror_default=alpha.de.repo.voidlinux.org
 
@@ -19,7 +21,11 @@ shift $((OPTIND-1))
 set -x
 
 sudo cp -a /usr/share/xbps.d/*-repository-*.conf /etc/xbps.d/
-sudo sed -i "s|$mirror_default|$mirror|" /etc/xbps.d/*
 
-xbps-install --sync
+for prefix in / /usr/src/void-packages ; do
+    [ -d "$prefix" ] || continue
+    sudo sed -i "s|$mirror_default|$mirror|" $prefix/etc/xbps.d/*
+done
+
+sudo xbps-install --sync
 xbps-query --list-repos
