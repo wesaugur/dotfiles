@@ -28,7 +28,7 @@ post() {
     do
         (set -x; "$HOME/.local/bin/vim-pack-install" $vim_pack) || [ $? -eq 128 ]
     done
-    git -C "$HOME/.vim/pack/git-packages" recursive pull
+    PATH="$PATH:$HOME/.local/bin" git -C "$HOME/.vim/pack/git-packages" recursive pull
 
     echo "[ $(tput setaf 2)OK$(tput sgr0) ] dotfiles-setup"
     echo "$(tput setaf 3)REMINDER$(tput sgr0)> exec \$SHELL --login"
@@ -65,12 +65,13 @@ void_linux() {
     xbps_install signify age
     # xbps_install magic-wormhole
 
+    xbps_install pkg-config
     fish_vendor_functions_d="$(pkg-config --variable=functionsdir fish)"
-    mkdir -p "$fish_vendor_functions_d"
-    ln -s "/usr/share/doc/fzf/key-bindings.fish" \
+    sudo mkdir -p "$fish_vendor_functions_d"
+    sudo ln -s "/usr/share/doc/fzf/key-bindings.fish" \
             "$fish_vendor_functions_d/fzf_key_bindings.fish" || [ $? -eq 1 ]
     bash_completions_d="$(pkg-config --variable=completionsdir bash-completion)"
-    ln -s "/usr/share/doc/fzf/completion.bash" \
+    sudo ln -s "/usr/share/doc/fzf/completion.bash" \
             "$bash_completions_d/fzf" || [ $? -eq 1 ]
 }
 

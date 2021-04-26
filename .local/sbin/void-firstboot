@@ -5,7 +5,8 @@ set -eu
 # > for _ in 1 2 3; do
 # >     sudo xbps-install --sync curl
 # > done
-# > curl -L https://git.io/void-firstboot | sh 2>&1 | tee -a void-firstboot.log
+# > curl -#LO https://git.io/void-firstboot
+# > sh void-firstboot [OPTIONS]   2>&1 | tee -a void-firstboot.log
 # > curl https://wesaugur.sh | sh 2>&1 | tee -a dotfiles-install.log
 # > chsh -s /bin/fish
 # > logout
@@ -14,10 +15,10 @@ set -eu
 # > sudo reboot
 
 # Libreboot BIOS + GPT Partitions:
-# - 1M     BIOS  Boot           no-fs
+# - 1M      BIOS Boot           no-fs
 # - 2xRAM  Linux Swap           swap
-# - 128G   Linux Root (<arch>)  xfs
-# - 333G   Linux Home           xfs
+# - 32G+   Linux Root (<arch>)  xfs
+# - %FREE  Linux Home           xfs
 
 # Libreboot X200:
 # - "DMAR: Failed to map dmar2" is a non-critical warning
@@ -26,7 +27,54 @@ set -eu
 #   Fix: Install Intel microcode package (intel-ucode) from nonfree repo
 #        https://docs.voidlinux.org/config/firmware.html#intel
 
-# TODO: Full Disk Encryption - https://docs.voidlinux.org/installation/guides/fde.html
+# Full Disk Encryption - https://docs.voidlinux.org/installation/guides/fde.html
+#                      - https://docs.voidlinux.org/installation/guides/chroot.html
+# > lsblk
+# > export DEVICE=<DEVICE>(sda)
+# > export PARTITION=<PARTITION>(sda2)
+# > export LVM_LABEL=<HOSTNAME>(x200)
+# > sudo cfdisk [--zero] /dev/$DEVICE
+#   BIOS + GPT Partitions:
+#   - 1M     BIOS Boot  no-fs
+#   - %FREE  Linux LVM
+# > sudo cryptsetup luksFormat [--type=luks1] /dev/$PARTITION
+# > sudo cryptsetup open /dev/$PARTITION luks-$LVM_LABEL
+# > sudo pvcreate /dev/mapper/luks-$LVM_LABEL
+# > sudo vgcreate vg_$LVM_LABEL /dev/mapper/luks-$LVM_LABEL
+# > sudo lvcreate --name=swap -L <2xRAM>  vg_$LVM_LABEL
+# > sudo lvcreate --name=root -L <32G+>   vg_$LVM_LABEL
+# > sudo lvcreate --name=home -l 100%FREE vg_$LVM_LABEL
+# Libreboot (hardcoded LVM names):
+# > sudo vgrename vg_$LVM_LABEL matrix
+# > sudo lvrename /dev/matrix/root /dev/matrix/rootvol
+# --
+# > sudo void-installer
+#   Bootloader: None
+#   Partition: Skip
+#   Filesystems: Use vg_$LVM_LABEL-<LV_LABEL> with fstype:none
+#   Reboot: No
+# > sudo mount /dev/vg_$LVM_LABEL/root /mnt
+# > for dir in dev proc sys ; do sudo mount --rbind /$dir /mnt/$dir --make-rslave ; done
+# > sudo chroot /mnt bash
+# Re-export {DEVICE,PARTITION,LVM_LABEL}
+# # echo GRUB_ENABLE_CRYPTODISK=y >> /etc/default/grub
+# Add "rd.auto" to /etc/default/grub:GRUB_CMDLINE_LINUX_DEFAULT
+#  OR "rd.luks.uuid=<UUID-prefix>" where <UUID> is:
+#   > blkid /dev/$PARTITION -s UUID -o value
+# LUKS Keyfile (optional):
+# # dd bs=1 count=64 if=/dev/random of=/boot/luks-$LVM_LABEL.key
+# # cryptsetup luksAddKey /dev/$PARTITION /boot/luks-$LVM_LABEL.key
+# # chmod 0000 /boot/luks-$LVM_LABEL.key
+# # chmod -R g=,o= /boot
+# # echo "luks-$LVM_LABEL  /dev/$PARTITION  /boot/luks-$LVM_LABEL.key" >> /etc/crypttab
+# # echo 'install_items+=" /boot/luks-$LVM_LABEL.key /etc/crypttab "'  >> \
+#           /etc/dracut.conf.d/10-crypt.conf
+# --
+# # grub-install /dev/$DEVICE
+# # xbps-reconfigure --force --all
+# # exit
+# > sudo umount -R /mnt
+# > sudo poweroff
 
 
 usage() {
@@ -123,6 +171,10 @@ EOF
 sudo chmod +x /etc/cron.weekly/fstrim
 
 # GRUB
+## Remove legacy kernel hardening; TODO: Not required on live images after 2021-03
+sudo sed -i '/GRUB_CMDLINE_LINUX_DEFAULT/s| slub_debug=P||'  /etc/default/grub
+sudo sed -i '/GRUB_CMDLINE_LINUX_DEFAULT/s| page_poison=1||' /etc/default/grub
+## UX
 sudo sed -i '/GRUB_BACKGROUND/s|^#||' /etc/default/grub
 sudo sed -i '/GRUB_TIMEOUT/s|=[0-9]\+|=1|' /etc/default/grub
 ## Default USB authorize internal devices only
