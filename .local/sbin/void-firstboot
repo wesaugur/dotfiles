@@ -12,6 +12,7 @@ set -eu
 # > logout
 # > dotfiles-fixup
 # > dim_fish_prompt
+# > void-repo-mirror-setup
 # > sudo reboot
 
 # Libreboot BIOS + GPT Partitions:
@@ -114,7 +115,7 @@ xbps_install xtools
 
 # USB firewall
 xbps_install usbguard
-sudo mkdir -m 0700 /etc/usbguard/IPCAccessControl.d  # TODO REMOVE: Dir missing from package
+sudo mkdir -p -m 0700 /etc/usbguard/IPCAccessControl.d  # TODO REMOVE: Dir missing from package
 # sudo usbguard add-user --group wheel --devices=ALL --policy=list --exceptions=ALL
 usbguard generate-policy | sudo tee -a /etc/usbguard/rules.conf
 sudo ln -s /etc/sv/usbguard /var/service/ || [ $? -eq 1 ]
