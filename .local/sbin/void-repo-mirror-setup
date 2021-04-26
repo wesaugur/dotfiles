@@ -1,0 +1,25 @@
+#!/bin/sh -eu
+
+mirror=mirrors.servercentral.com/voidlinux
+mirror_default=alpha.de.repo.voidlinux.org
+
+usage() {
+    printf 'usage: %s [-M MIRROR]\n' "$0"
+    exit 3
+}
+
+while getopts hM: opt; do
+    case $opt in
+        h|\?)  usage ;;
+        M)  mirror=$OPTARG ;;
+    esac
+done
+shift $((OPTIND-1))
+
+set -x
+
+sudo cp -a /usr/share/xbps.d/*-repository-*.conf /etc/xbps.d/
+sudo sed -i "s|$mirror_default|$mirror|" /etc/xbps.d/*
+
+xbps-install --sync
+xbps-query --list-repos
