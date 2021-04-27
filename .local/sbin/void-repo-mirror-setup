@@ -2,8 +2,8 @@
 
 # https://docs.voidlinux.org/xbps/repositories/mirrors/changing.html
 
-mirror=mirrors.servercentral.com/voidlinux
-mirror_default=alpha.de.repo.voidlinux.org
+mirror_new=mirrors.servercentral.com/voidlinux
+mirror_old=alpha.de.repo.voidlinux.org
 
 usage() {
     printf 'usage: %s [-M MIRROR]\n' "$0"
@@ -13,7 +13,7 @@ usage() {
 while getopts hM: opt; do
     case $opt in
         h|\?)  usage ;;
-        M)  mirror=$OPTARG ;;
+        M)  mirror_new=$OPTARG ;;
     esac
 done
 shift $((OPTIND-1))
@@ -24,7 +24,7 @@ sudo cp -a /usr/share/xbps.d/*-repository-*.conf /etc/xbps.d/
 
 for prefix in / /usr/src/void-packages ; do
     [ -d "$prefix" ] || continue
-    sudo sed -i "s|$mirror_default|$mirror|" $prefix/etc/xbps.d/*
+    sudo sed -i "s|$mirror_old|$mirror_new|" $prefix/etc/xbps.d/*
 done
 
 sudo xbps-install --sync

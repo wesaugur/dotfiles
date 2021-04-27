@@ -1,5 +1,7 @@
 #!/bin/sh -eux
 
+# https://github.com/void-linux/void-packages
+
 SRC_DIR=/usr/src
 XBPS_SRC_DIR=$SRC_DIR/void-packages
 

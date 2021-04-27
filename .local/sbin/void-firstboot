@@ -2,9 +2,7 @@
 set -eu
 
 # Quickstart:
-# > for _ in 1 2 3; do
-# >     sudo xbps-install --sync curl
-# > done
+# > sudo xbps-install --sync xbps curl
 # > curl -#LO https://git.io/void-firstboot
 # > sh void-firstboot [OPTIONS]   2>&1 | tee -a void-firstboot.log
 # > curl https://wesaugur.sh | sh 2>&1 | tee -a dotfiles-install.log
@@ -103,9 +101,8 @@ if [ $nonfree = true ]; then
     xbps_install void-repo-nonfree
 fi
 
-for _ in 1 2 3; do
-    xbps_install --sync --update
-done
+xbps_install --sync xbps
+xbps_install --sync --update
 
 # Git
 xbps_install git
@@ -117,7 +114,7 @@ xbps_install xtools
 xbps_install usbguard
 sudo mkdir -p -m 0700 /etc/usbguard/IPCAccessControl.d  # TODO REMOVE: Dir missing from package
 # sudo usbguard add-user --group wheel --devices=ALL --policy=list --exceptions=ALL
-usbguard generate-policy | sudo tee -a /etc/usbguard/rules.conf
+usbguard generate-policy | sudo tee /etc/usbguard/rules.conf
 sudo ln -s /etc/sv/usbguard /var/service/ || [ $? -eq 1 ]
 
 # Network firewall
@@ -156,7 +153,8 @@ sudo update-grub
 
 # Keymap
 # sudo sed -i '/KEYMAP/s|=us|="us ctrl"|' /etc/rc.conf  # Swaps Caps_Lock//Control
-sudo tee -a /etc/rc.local <<-EOF > /dev/null
+grep 's|Caps_Lock|Control|' /etc/rc.local || \
+        sudo tee -a /etc/rc.local <<-EOF > /dev/null
 
 	dumpkeys | sed 's|Caps_Lock|Control|' | loadkeys
 EOF
