@@ -16,7 +16,7 @@ post() {
     sudo chmod +x "$git_sync"
 
     fish -c fish_update_completions
-    pkill -u "$USER" ssh-agent
+    pkill -u "$USER" ssh-agent || [ $? -eq 1 ]
 
     set +x
 
@@ -53,7 +53,7 @@ void_linux() {
         sudo xbps-install --yes "$@"
     }
 
-    xbps_install --sync
+    xbps_install --sync xbps
 
     xbps_install curl make
     xbps_install git git-lfs git-crypt
