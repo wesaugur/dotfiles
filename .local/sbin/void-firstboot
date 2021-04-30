@@ -146,7 +146,9 @@ sudo chmod +x /etc/cron.weekly/fstrim
 sudo sed -i '/GRUB_BACKGROUND/s|^#||' /etc/default/grub
 sudo sed -i '/GRUB_TIMEOUT/s|=[0-9]\+|=1|' /etc/default/grub
 ## Default USB authorize internal devices only
-sudo sed -i '/GRUB_CMDLINE_LINUX_DEFAULT/s|"$| usbcore.authorized_default=2"|' /etc/default/grub
+usb_auth='usbcore.authorized_default=2'
+grep $usb_auth /etc/default/grub || \
+        sudo sed -i "/GRUB_CMDLINE_LINUX_DEFAULT/s|\"$| $usb_auth&|" /etc/default/grub
 sudo update-grub
 
 # Keymap
