@@ -2,6 +2,8 @@
 set -eu
 
 # Quickstart:
+# > sudo void-installer
+# > sudo poweroff
 # > sudo xbps-install --sync xbps curl
 # > curl -#LO https://git.io/void-firstboot
 # > sh void-firstboot [OPTIONS]   2>&1 | tee -a void-firstboot.log

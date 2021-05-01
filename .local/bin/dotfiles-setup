@@ -65,6 +65,8 @@ void_linux() {
     xbps_install signify age
     # xbps_install magic-wormhole
 
+    sudo ln -s "$(command -v moreutils_ts)" /usr/local/bin/ts || [ $? -eq 1 ]
+
     xbps_install pkg-config
     fish_vendor_functions_d="$(pkg-config --variable=functionsdir fish)"
     sudo mkdir -p "$fish_vendor_functions_d"
