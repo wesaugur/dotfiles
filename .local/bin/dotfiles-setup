@@ -41,7 +41,19 @@ post() {
 }
 
 openbsd() {
-    return  # TODO
+    pkg_add() {
+        doas pkg_add "$@"
+    }
+
+    pkg_add curl
+    pkg_add git git-lfs git-crypt
+    pkg_add fish direnv vim--no_x11 python3
+    pkg_add htop pv moreutils bash-completion universal-ctags--iconv fzf colortree ripgrep
+    pkg_add gnupg
+    pkg_add age
+    # FIXME: fd-find
+
+    doas ln -s "$(command -v colortree)" /usr/local/bin/tree || [ $? -eq 1 ]
 }
 
 freebsd() {
@@ -188,7 +200,7 @@ pre
 
 # shellcheck disable=SC1091  # Don't follow /etc/os-release
 case $(uname) in
-    # OpenBSD*) openbsd ;;
+    OpenBSD*) openbsd ;;
     # FreeBSD*) freebsd ;;
     Linux*) case $(. /etc/os-release && echo "$ID") in
         void*)   void_linux ;;

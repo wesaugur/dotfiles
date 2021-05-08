@@ -8,6 +8,11 @@ set -eu
 # > doas pkg_add curl
 # > curl -L https://git.io/openbsd-firstboot | sh 2>&1 | tee -a openbsd-firstboot.log
 # > curl https://wesaugur.sh | sh 2>&1 | tee -a dotfiles-install.log
+# > chsh -s /usr/local/bin/fish
+# > logout
+# > dotfiles-fixup
+# > dim_fish_prompt
+# > doas reboot
 
 
 pkg_add() {
@@ -19,7 +24,7 @@ append_once() {
     path="$2"
     line="$3"
     doas -u "$user" grep "^$line$" "$path" > /dev/null || \
-            echo "$line" | doas -u "$user" tee -a "$path"
+            echo "$line" | doas -u "$user" tee -a "$path" > /dev/null
 }
 
 set -x
@@ -28,14 +33,17 @@ append_once root /etc/doas.conf    'permit keepenv persist :wheel'
 append_once root /etc/daily.local  'syspatch -c'
 append_once root /etc/mail/aliases 'root: wes'
 
-doas syspatch
+# Update
+doas syspatch || [ $? -eq 2 ]
 doas fw_update
-doas pkg_add -u
-doas pkg_add git
+pkg_add -u
+
+# Git
+pkg_add git
 
 # Console
 doas cp -ai /etc/examples/wsconsctl.conf /etc/
-append_once root /etc/wsconsctl.conf 'wsconsctl keyboard.map+="keysym Caps_Lock = Control_L"'
+append_once root /etc/wsconsctl.conf 'keyboard.map+="keysym Caps_Lock = Control_L"'
 
 set +x
-echo "[ $(tput setaf 2)OK$(tput sgr0) ] openbsd-firstboot"
+echo "[ OK ] openbsd-firstboot"
