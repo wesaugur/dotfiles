@@ -1,2 +1,41 @@
 #!/bin/sh
 set -eu
+
+# Quickstart:
+# > su
+# # cp -ai /etc/examples/doas.conf /etc/
+# # exit
+# > doas pkg_add curl
+# > curl -L https://git.io/openbsd-firstboot | sh 2>&1 | tee -a openbsd-firstboot.log
+# > curl https://wesaugur.sh | sh 2>&1 | tee -a dotfiles-install.log
+
+
+pkg_add() {
+    doas pkg_add "$@"
+}
+
+append_once() {
+    user="$1"
+    path="$2"
+    line="$3"
+    doas -u "$user" grep "^$line$" "$path" > /dev/null || \
+            echo "$line" | doas -u "$user" tee -a "$path"
+}
+
+set -x
+
+append_once root /etc/doas.conf    'permit keepenv persist :wheel'
+append_once root /etc/daily.local  'syspatch -c'
+append_once root /etc/mail/aliases 'root: wes'
+
+doas syspatch
+doas fw_update
+doas pkg_add -u
+doas pkg_add git
+
+# Console
+doas cp -ai /etc/examples/wsconsctl.conf /etc/
+append_once root /etc/wsconsctl.conf 'wsconsctl keyboard.map+="keysym Caps_Lock = Control_L"'
+
+set +x
+echo "[ $(tput setaf 2)OK$(tput sgr0) ] openbsd-firstboot"

@@ -20,7 +20,7 @@ shift $((OPTIND-1))
 
 set -x
 
-sudo cp -a /usr/share/xbps.d/*-repository-*.conf /etc/xbps.d/
+sudo cp -ai /usr/share/xbps.d/*-repository-*.conf /etc/xbps.d/
 
 for prefix in / /usr/src/void-packages ; do
     [ -d "$prefix" ] || continue
