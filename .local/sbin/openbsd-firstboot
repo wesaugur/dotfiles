@@ -5,9 +5,8 @@ set -eu
 # > su
 # # cp -ai /etc/examples/doas.conf /etc/
 # # exit
-# > doas pkg_add curl
-# > curl -L https://git.io/openbsd-firstboot | sh 2>&1 | tee -a openbsd-firstboot.log
-# > curl https://wesaugur.sh | sh 2>&1 | tee -a dotfiles-install.log
+# > ftp -o- https://git.io/openbsd-firstboot | sh 2>&1 | tee -a openbsd-firstboot.log
+# > ftp -o- https://wesaugur.sh | sh 2>&1 | tee -a dotfiles-install.log
 # > chsh -s /usr/local/bin/fish
 # > logout
 # > dotfiles-fixup
@@ -31,7 +30,7 @@ set -x
 
 append_once root /etc/doas.conf    'permit keepenv persist :wheel'
 append_once root /etc/daily.local  'syspatch -c'
-append_once root /etc/mail/aliases 'root: wes'
+append_once root /etc/mail/aliases "root: $USER"
 
 # Update
 doas syspatch || [ $? -eq 2 ]

@@ -4,6 +4,10 @@ dotfiles() {
     GIT_DIR="$HOME/.dotfiles.git" GIT_WORK_TREE="$HOME" "$@"
 }
 
+sudoas() {
+    return  # TODO
+}
+
 pre() {
     "$HOME/.local/bin/permissions-fixup"
 }
@@ -54,6 +58,9 @@ openbsd() {
     # FIXME: fd-find
 
     doas ln -s "$(command -v colortree)" /usr/local/bin/tree || [ $? -eq 1 ]
+
+    pkg_add colorls
+    doas ln -s "$(command -v colorls)" /usr/local/bin/ls || [ $? -eq 1 ]
 }
 
 freebsd() {
