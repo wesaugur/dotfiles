@@ -5,7 +5,11 @@ dotfiles() {
 }
 
 sudoas() {
-    return  # TODO
+    if command -v doas > /dev/null ; then
+        doas "$@"
+    else
+        sudo "$@"
+    fi
 }
 
 pre() {
@@ -15,9 +19,9 @@ pre() {
 post() {
     # https://github.com/simonthum/git-sync
     git_sync="/usr/local/bin/git-sync"
-    sudo curl -#L https://github.com/simonthum/git-sync/raw/master/git-sync \
-              --output "$git_sync"
-    sudo chmod +x "$git_sync"
+    sudoas curl -#L https://github.com/simonthum/git-sync/raw/master/git-sync \
+                --output "$git_sync"
+    sudoas chmod +x "$git_sync"
 
     fish -c fish_update_completions
     pkill -u "$USER" ssh-agent || [ $? -eq 1 ]
