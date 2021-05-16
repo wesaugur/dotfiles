@@ -11,7 +11,23 @@ set -eu
 # > logout
 # > dotfiles-fixup
 # > dim_fish_prompt
+# > man afterboot
 # > doas reboot
+
+# Full Disk Encryption - https://www.openbsd.org/faq/faq14.html#softraidFDE
+# # export DEVICE=<DEVICE>(sd0)
+# # cd /dev && sh MAKEDEV $DEVICE
+# # fdisk $DEVICE
+# # disklabel -h $DEVICE
+# # dd if=/dev/random of=/dev/r${DEVICE}c bs=1m
+# # fdisk -i [-g] $DEVICE
+# # disklabel -E $DEVICE
+# $DEVICE> a (add partition; accept defaults)
+# size: *
+# FS type: RAID
+# $DEVICE> w
+# $DEVICE> q
+# # bioctl -c C -l ${DEVICE}a softraid0
 
 
 pkg_add() {

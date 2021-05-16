@@ -28,6 +28,14 @@ set -eu
 #   Fix: Install Intel microcode package (intel-ucode) from nonfree repo
 #        https://docs.voidlinux.org/config/firmware.html#intel
 
+# SSD Reset:
+# > sudo hdparm -I /dev/$DEVICE
+# > sudo hdparm --security-set-pass $PASSWORD /dev/$DEVICE
+# > sudo hdparm --security-erase-enhanced $PASSWORD /dev/$DEVICE
+
+# Disk Wiping:
+# > sudo dd if=/dev/urandom of=/dev/$DEVICE status=progress bs=1M
+
 # Full Disk Encryption - https://docs.voidlinux.org/installation/guides/fde.html
 #                      - https://docs.voidlinux.org/installation/guides/chroot.html
 # > lsblk
@@ -69,7 +77,7 @@ set -eu
 # # chmod 0000 /boot/luks-$LVM_LABEL.key
 # # chmod -R g=,o= /boot
 # # echo "luks-$LVM_LABEL  /dev/$PARTITION  /boot/luks-$LVM_LABEL.key" >> /etc/crypttab
-# # echo 'install_items+=" /boot/luks-$LVM_LABEL.key /etc/crypttab "'  >> \
+# # echo "install_items+=\" /boot/luks-$LVM_LABEL.key /etc/crypttab \"" >> \
 #           /etc/dracut.conf.d/10-crypt.conf
 # --
 # # grub-install /dev/$DEVICE
@@ -80,16 +88,18 @@ set -eu
 
 
 usage() {
-    printf 'usage: %s [-F (nonfree)]\n' "$0"
+    printf 'usage: %s [-F (nonfree)] [-U (usbguard)]\n' "$0"
     exit 3
 }
 
 nonfree=false
+usbguard=false
 
-while getopts hF opt; do
+while getopts hFU opt; do
     case $opt in
         h|\?)  usage ;;
         F)  nonfree=true ;;
+        U)  usbguard=true ;;
     esac
 done
 shift $((OPTIND-1))
@@ -104,6 +114,7 @@ if [ $nonfree = true ]; then
     xbps_install void-repo-nonfree
 fi
 
+# Update
 xbps_install --sync xbps
 xbps_install --sync --update
 
@@ -127,6 +138,9 @@ sudo ufw allow ssh
 sudo ufw enable
 sudo ln -s /etc/sv/ufw /var/service/ || [ $? -eq 1 ]
 
+# OpenSSH daemon
+sudo ln -s /etc/sv/sshd /var/service/ || [ $? -eq 1 ]
+
 # NTP alternative
 xbps_install chrony
 sudo ln -s /etc/sv/chronyd /var/service/ || [ $? -eq 1 ]
@@ -147,10 +161,12 @@ sudo chmod +x /etc/cron.weekly/fstrim
 ## UX
 sudo sed -i '/GRUB_BACKGROUND/s|^#||' /etc/default/grub
 sudo sed -i '/GRUB_TIMEOUT/s|=[0-9]\+|=1|' /etc/default/grub
-## Default USB authorize internal devices only
+## USB authorize internal devices only
 usb_auth='usbcore.authorized_default=2'
-grep $usb_auth /etc/default/grub || \
-        sudo sed -i "/GRUB_CMDLINE_LINUX_DEFAULT/s|\"$| $usb_auth&|" /etc/default/grub
+if [ $usbguard = true ]; then
+    grep $usb_auth /etc/default/grub || \
+            sudo sed -i "/GRUB_CMDLINE_LINUX_DEFAULT/s|\"$| $usb_auth&|" /etc/default/grub
+fi
 sudo update-grub
 
 # Keymap
