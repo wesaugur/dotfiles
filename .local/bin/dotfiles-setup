@@ -169,6 +169,7 @@ mac() {
     ln -s "$(brew --prefix)/opt/fzf/shell/completion.bash" \
             "$bash_completions_d/fzf" || [ $? -eq 1 ]
     vimfiles_dir="$(brew --prefix)/share/vim/vimfiles"
+    # vimfiles_dir="$HOME/.vim"  # HACK: brew upgrade overwrites vimfiles
     mkdir -p "$vimfiles_dir/plugin"
     ln -s "$(brew --prefix)/opt/fzf/plugin/fzf.vim" \
             "$vimfiles_dir/plugin" || [ $? -eq 1 ]
