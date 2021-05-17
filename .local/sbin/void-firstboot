@@ -88,18 +88,18 @@ set -eu
 
 
 usage() {
-    printf 'usage: %s [-F (nonfree)] [-U (usbguard)]\n' "$0"
+    printf 'usage: %s [-U (no-usb)] [-F (nonfree)]\n' "$0"
     exit 3
 }
 
+no_usb=false
 nonfree=false
-usbguard=false
 
-while getopts hFU opt; do
+while getopts hUF opt; do
     case $opt in
         h|\?)  usage ;;
+        U)  no_usb=true ;;
         F)  nonfree=true ;;
-        U)  usbguard=true ;;
     esac
 done
 shift $((OPTIND-1))
@@ -163,7 +163,7 @@ sudo sed -i '/GRUB_BACKGROUND/s|^#||' /etc/default/grub
 sudo sed -i '/GRUB_TIMEOUT/s|=[0-9]\+|=1|' /etc/default/grub
 ## USB authorize internal devices only
 usb_auth='usbcore.authorized_default=2'
-if [ $usbguard = true ]; then
+if [ $no_usb = true ]; then
     grep $usb_auth /etc/default/grub || \
             sudo sed -i "/GRUB_CMDLINE_LINUX_DEFAULT/s|\"$| $usb_auth&|" /etc/default/grub
 fi
