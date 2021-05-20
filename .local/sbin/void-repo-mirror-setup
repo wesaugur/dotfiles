@@ -6,7 +6,7 @@ mirror_new=mirrors.servercentral.com/voidlinux
 mirror_old=alpha.de.repo.voidlinux.org
 
 usage() {
-    printf 'usage: %s [-M MIRROR]\n' "$0"
+    >&2 printf 'usage: %s [-M MIRROR]\n' "$0"
     exit 3
 }
 

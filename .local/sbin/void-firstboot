@@ -88,7 +88,7 @@ set -eu
 
 
 usage() {
-    printf 'usage: %s [-U (no-usb)] [-F (nonfree)]\n' "$0"
+    >&2 printf 'usage: %s [-U (no-usb)] [-F (nonfree)]\n' "$0"
     exit 3
 }
 

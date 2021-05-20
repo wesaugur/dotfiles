@@ -204,7 +204,7 @@ mac() {
 
 unsupported() {
     set +x
-    echo "[ $(tput setaf 1)ERROR$(tput sgr0) ] OS not supported"
+    >&2 echo "[ $(tput setaf 1)ERROR$(tput sgr0) ] OS not supported"
     exit 1
 }
 
