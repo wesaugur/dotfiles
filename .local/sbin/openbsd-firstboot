@@ -15,11 +15,13 @@ set -eu
 # > doas reboot
 
 # Full Disk Encryption - https://www.openbsd.org/faq/faq14.html#softraidFDE
+# - OpenBSD Installer: choose (S)hell
+# # sysctl hw.disknames
 # # export DEVICE=<DEVICE>(sd0)
 # # cd /dev && sh MAKEDEV $DEVICE
 # # fdisk $DEVICE
 # # disklabel -h $DEVICE
-# # dd if=/dev/random of=/dev/r${DEVICE}c bs=1m
+# # dd if=/dev/random of=/dev/r${DEVICE}c bs=1M
 # # fdisk -i [-g] $DEVICE
 # # disklabel -E $DEVICE
 # $DEVICE> a (add partition; accept defaults)
@@ -28,6 +30,11 @@ set -eu
 # $DEVICE> w
 # $DEVICE> q
 # # bioctl -c C -l ${DEVICE}a softraid0
+# # export CRYPTO_DEVICE=<DEVICE>(sd2)
+# # cd /dev && sh MAKEDEV $CRYPTO_DEVICE
+# # dd if=/dev/zero of=/dev/r${CRYPTO_DEVICE}c bs=1M count=1
+# # exit
+# # Install onto $CRYPTO_DEVICE
 
 
 pkg_add() {
