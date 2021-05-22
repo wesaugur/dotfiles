@@ -21,8 +21,8 @@ set -eu
 # # cd /dev && sh MAKEDEV $DEVICE
 # # fdisk $DEVICE
 # # disklabel -h $DEVICE
-# # dd if=/dev/random of=/dev/r${DEVICE}c bs=1M
-# # fdisk -i [-g] $DEVICE
+# # dd if=/dev/urandom of=/dev/r${DEVICE}c bs=1M
+# # fdisk -i $DEVICE
 # # disklabel -E $DEVICE
 # $DEVICE> a (add partition; accept defaults)
 # size: *
@@ -34,7 +34,7 @@ set -eu
 # # cd /dev && sh MAKEDEV $CRYPTO_DEVICE
 # # dd if=/dev/zero of=/dev/r${CRYPTO_DEVICE}c bs=1M count=1
 # # exit
-# # Install onto $CRYPTO_DEVICE
+# - Install onto $CRYPTO_DEVICE
 
 
 pkg_add() {
@@ -67,5 +67,6 @@ pkg_add git
 doas cp -ai /etc/examples/wsconsctl.conf /etc/
 append_once root /etc/wsconsctl.conf 'keyboard.map+="keysym Caps_Lock = Control_L"'
 
+TERM=pccon
 set +x
-echo "[ OK ] openbsd-firstboot"
+echo "[ $(tput setaf 2)OK$(tput sgr0) ] openbsd-firstboot"
