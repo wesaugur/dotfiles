@@ -16,10 +16,12 @@ export TMUX_SESSION_NAME="BASE"
 export DOTFILES_GIT_DIR="$HOME/.dotfiles.git"
 export  HOMEDIR_GIT_DIR="$HOME/.homedir.git"
 
-export FZF_FD="fd --hidden --follow --exclude=.git/"
-export FZF_DEFAULT_COMMAND="$FZF_FD --type=file"
-export FZF_ALT_C_COMMAND="$FZF_FD --type=directory"
-export FZF_CTRL_T_COMMAND="$FZF_FD"
+command -v fd > /dev/null && \
+    export FZF_FD="fd --hidden --follow --exclude=.git/" && \
+    export FZF_DEFAULT_COMMAND="$FZF_FD --type=file"     && \
+    export FZF_ALT_C_COMMAND="$FZF_FD --type=directory"  && \
+    export FZF_CTRL_T_COMMAND="$FZF_FD"
+
 export FZF_DEFAULT_OPTS="--height=40% --layout=reverse-list"
 export FZF_CTRL_T_OPTS="--preview='cat {} 2> /dev/null || tree -aFC {} | head -n 100'"
 export FZF_ALT_C_OPTS="--preview='tree -aFC {} | head -n 100'"
