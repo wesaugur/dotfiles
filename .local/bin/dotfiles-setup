@@ -53,18 +53,22 @@ openbsd() {
         doas pkg_add "$@"
     }
 
+    TERM=pccon
+
     pkg_add curl
     pkg_add git git-lfs git-crypt
     pkg_add fish direnv vim--no_x11 python3
-    pkg_add htop pv moreutils bash-completion universal-ctags--iconv fzf colortree ripgrep
+    pkg_add htop pv moreutils bash-completion universal-ctags--iconv fzf ripgrep
     pkg_add gnupg
     pkg_add age
     # FIXME: fd-find
 
-    doas ln -s "$(command -v colortree)" /usr/local/bin/tree || [ $? -eq 1 ]
-
     pkg_add colorls
-    doas ln -s "$(command -v colorls)" /usr/local/bin/ls || [ $? -eq 1 ]
+    doas ln -s "$(command -v colorls)" "$HOME/.local/bin/ls" || [ $? -eq 1 ]
+
+    # pkg_add tree
+    pkg_add colortree
+    doas ln -s "$(command -v colortree)" /usr/local/bin/tree || [ $? -eq 1 ]
 }
 
 freebsd() {
