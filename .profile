@@ -40,9 +40,9 @@ pgrep -u "$USER" ssh-agent > /dev/null || \
 
 export PATH="$HOME/.pyenv/bin:$PATH"
 [   "$FISH_VERSION" ] && command -v pyenv > /dev/null && \
-    eval 'pyenv init - | source  && pyenv virtualenv-init - | source'
+    eval 'pyenv init --path | source'
 [ ! "$FISH_VERSION" ] && command -v pyenv > /dev/null && \
-    eval 'eval "$(pyenv init -)" && eval "$(pyenv virtualenv-init -)"'
+    eval 'eval "$(pyenv init --path)"'
 
 [ "$BASH_VERSION" ] && [ "$PS1" ] && [ -f ~/.bashrc ] && . ~/.bashrc
 
