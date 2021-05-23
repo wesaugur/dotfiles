@@ -53,7 +53,7 @@ openbsd() {
         doas pkg_add "$@"
     }
 
-    TERM=pccon
+    [ "$TERM" = vt220 ] && TERM=pccon
 
     pkg_add curl
     pkg_add git git-lfs git-crypt
@@ -61,7 +61,10 @@ openbsd() {
     pkg_add htop pv moreutils bash-completion universal-ctags--iconv fzf ripgrep
     pkg_add gnupg
     pkg_add age
-    # FIXME: fd-find
+    # TODO: fd-find not in packages/ports
+
+    # TODO: For OpenBSD<=6.9; later releases should check $XDG_CONFIG_HOME
+    ln -s "$HOME/.config/tmux/tmux.conf" "$HOME/.tmux.conf"
 
     pkg_add colorls
     doas ln -s "$(command -v colorls)" "$HOME/.local/bin/ls" || [ $? -eq 1 ]

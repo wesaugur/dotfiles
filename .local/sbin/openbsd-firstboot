@@ -66,7 +66,8 @@ pkg_add git
 # Console
 doas cp -ai /etc/examples/wsconsctl.conf /etc/
 append_once root /etc/wsconsctl.conf 'keyboard.map+="keysym Caps_Lock = Control_L"'
-
 TERM=pccon
+doas sed -i "/^ttyC/s|	vt220|	$TERM|" /etc/ttys
+
 set +x
 echo "[ $(tput setaf 2)OK$(tput sgr0) ] openbsd-firstboot"
