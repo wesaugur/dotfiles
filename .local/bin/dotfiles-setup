@@ -4,6 +4,14 @@ dotfiles() {
     GIT_DIR="$HOME/.dotfiles.git" GIT_WORK_TREE="$HOME" "$@"
 }
 
+sudoas() {
+    if command -v doas > /dev/null ; then
+        doas "$@"
+    else
+        sudo "$@"
+    fi
+}
+
 pre() {
     "$HOME/.local/bin/permissions-fixup"
 }
@@ -11,12 +19,12 @@ pre() {
 post() {
     # https://github.com/simonthum/git-sync
     git_sync="/usr/local/bin/git-sync"
-    sudo curl -#L https://github.com/simonthum/git-sync/raw/master/git-sync \
-              --output "$git_sync"
-    sudo chmod +x "$git_sync"
+    sudoas curl -#L https://github.com/simonthum/git-sync/raw/master/git-sync \
+                --output "$git_sync"
+    sudoas chmod +x "$git_sync"
 
     fish -c fish_update_completions
-    pkill -u "$USER" ssh-agent
+    pkill -u "$USER" ssh-agent || [ $? -eq 1 ]
 
     set +x
 
@@ -28,7 +36,7 @@ post() {
     do
         (set -x; "$HOME/.local/bin/vim-pack-install" $vim_pack) || [ $? -eq 128 ]
     done
-    git -C "$HOME/.vim/pack/git-packages" recursive pull
+    PATH="$PATH:$HOME/.local/bin" git -C "$HOME/.vim/pack/git-packages" recursive pull
 
     echo "[ $(tput setaf 2)OK$(tput sgr0) ] dotfiles-setup"
     echo "$(tput setaf 3)REMINDER$(tput sgr0)> exec \$SHELL --login"
@@ -41,7 +49,29 @@ post() {
 }
 
 openbsd() {
-    return  # TODO
+    pkg_add() {
+        doas pkg_add "$@"
+    }
+
+    [ "$TERM" = vt220 ] && TERM=pccon
+
+    pkg_add curl
+    pkg_add git git-lfs git-crypt
+    pkg_add fish direnv vim--no_x11 python3
+    pkg_add htop pv moreutils bash-completion universal-ctags--iconv fzf ripgrep
+    pkg_add gnupg
+    pkg_add age
+    # TODO: fd-find not in packages/ports
+
+    # TODO: For OpenBSD<=6.9; later releases should check $XDG_CONFIG_HOME
+    ln -s "$HOME/.config/tmux/tmux.conf" "$HOME/.tmux.conf"
+
+    pkg_add colorls
+    doas ln -s "$(command -v colorls)" "$HOME/.local/bin/ls" || [ $? -eq 1 ]
+
+    # pkg_add tree
+    pkg_add colortree
+    doas ln -s "$(command -v colortree)" /usr/local/bin/tree || [ $? -eq 1 ]
 }
 
 freebsd() {
@@ -53,7 +83,7 @@ void_linux() {
         sudo xbps-install --yes "$@"
     }
 
-    xbps_install --sync
+    xbps_install --sync xbps
 
     xbps_install curl make
     xbps_install git git-lfs git-crypt
@@ -65,12 +95,15 @@ void_linux() {
     xbps_install signify age
     # xbps_install magic-wormhole
 
+    sudo ln -s "$(command -v moreutils_ts)" /usr/local/bin/ts || [ $? -eq 1 ]
+
+    xbps_install pkg-config
     fish_vendor_functions_d="$(pkg-config --variable=functionsdir fish)"
-    mkdir -p "$fish_vendor_functions_d"
-    ln -s "/usr/share/doc/fzf/key-bindings.fish" \
+    sudo mkdir -p "$fish_vendor_functions_d"
+    sudo ln -s "/usr/share/doc/fzf/key-bindings.fish" \
             "$fish_vendor_functions_d/fzf_key_bindings.fish" || [ $? -eq 1 ]
     bash_completions_d="$(pkg-config --variable=completionsdir bash-completion)"
-    ln -s "/usr/share/doc/fzf/completion.bash" \
+    sudo ln -s "/usr/share/doc/fzf/completion.bash" \
             "$bash_completions_d/fzf" || [ $? -eq 1 ]
 }
 
@@ -143,6 +176,7 @@ mac() {
     ln -s "$(brew --prefix)/opt/fzf/shell/completion.bash" \
             "$bash_completions_d/fzf" || [ $? -eq 1 ]
     vimfiles_dir="$(brew --prefix)/share/vim/vimfiles"
+    # vimfiles_dir="$HOME/.vim"  # HACK: brew upgrade overwrites vimfiles
     mkdir -p "$vimfiles_dir/plugin"
     ln -s "$(brew --prefix)/opt/fzf/plugin/fzf.vim" \
             "$vimfiles_dir/plugin" || [ $? -eq 1 ]
@@ -177,7 +211,7 @@ mac() {
 
 unsupported() {
     set +x
-    echo "[ $(tput setaf 1)ERROR$(tput sgr0) ] OS not supported"
+    >&2 echo "[ $(tput setaf 1)ERROR$(tput sgr0) ] OS not supported"
     exit 1
 }
 
@@ -185,7 +219,7 @@ pre
 
 # shellcheck disable=SC1091  # Don't follow /etc/os-release
 case $(uname) in
-    # OpenBSD*) openbsd ;;
+    OpenBSD*) openbsd ;;
     # FreeBSD*) freebsd ;;
     Linux*) case $(. /etc/os-release && echo "$ID") in
         void*)   void_linux ;;

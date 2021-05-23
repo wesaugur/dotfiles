@@ -4,7 +4,7 @@ git_url_base=git://github.com
 vim_pack_dir=$HOME/.vim/pack/git-packages/start
 
 usage() {
-    printf 'usage: %s [-b GIT-URL-BASE (%s)] GIT-URL-PATH\n' "$0" "$git_url_base"
+    >&2 printf 'usage: %s [-b GIT-URL-BASE (%s)] GIT-URL-PATH\n' "$0" "$git_url_base"
     exit 3
 }
 

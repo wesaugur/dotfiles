@@ -1,7 +1,7 @@
 #!/bin/sh -eu
 
 usage() {
-    printf 'usage: %s [-n FULL-NAME] [-e EMAIL] [-d DATE] [-f OUT-FILE]\n' "$0"
+    >&2 printf 'usage: %s [-n FULL-NAME] [-e EMAIL] [-d DATE] [-f OUT-FILE]\n' "$0"
     exit 3
 }
 

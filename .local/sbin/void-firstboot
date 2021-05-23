@@ -2,22 +2,24 @@
 set -eu
 
 # Quickstart:
-# > for _ in 1 2 3; do
-# >     sudo xbps-install --sync curl
-# > done
-# > curl -L https://git.io/void-firstboot | sh 2>&1 | tee -a void-firstboot.log
+# > sudo void-installer
+# > sudo poweroff
+# > sudo xbps-install --sync xbps curl
+# > curl -#LO https://git.io/void-firstboot
+# > sh void-firstboot [OPTIONS]   2>&1 | tee -a void-firstboot.log
 # > curl https://wesaugur.sh | sh 2>&1 | tee -a dotfiles-install.log
 # > chsh -s /bin/fish
 # > logout
 # > dotfiles-fixup
 # > dim_fish_prompt
+# > void-repo-mirror-setup
 # > sudo reboot
 
 # Libreboot BIOS + GPT Partitions:
-# - 1M     BIOS  Boot           no-fs
+# - 1M      BIOS Boot           no-fs
 # - 2xRAM  Linux Swap           swap
-# - 128G   Linux Root (<arch>)  xfs
-# - 333G   Linux Home           xfs
+# - 32G+   Linux Root (<arch>)  xfs
+# - %FREE  Linux Home           xfs
 
 # Libreboot X200:
 # - "DMAR: Failed to map dmar2" is a non-critical warning
@@ -26,25 +28,78 @@ set -eu
 #   Fix: Install Intel microcode package (intel-ucode) from nonfree repo
 #        https://docs.voidlinux.org/config/firmware.html#intel
 
-# TODO: Full Disk Encryption - https://docs.voidlinux.org/installation/guides/fde.html
+# SSD Reset:
+# > sudo hdparm -I /dev/$DEVICE
+# > sudo hdparm --security-set-pass $PASSWORD /dev/$DEVICE
+# > sudo hdparm --security-erase-enhanced $PASSWORD /dev/$DEVICE
+
+# Disk Wiping:
+# > sudo dd if=/dev/urandom of=/dev/$DEVICE status=progress bs=1M
+
+# Full Disk Encryption - https://docs.voidlinux.org/installation/guides/fde.html
+#                      - https://docs.voidlinux.org/installation/guides/chroot.html
+# > lsblk
+# > export DEVICE=<DEVICE>(sda)
+# > export PARTITION=<PARTITION>(sda2)
+# > export LVM_LABEL=<HOSTNAME>(x200)
+# > sudo cfdisk [--zero] /dev/$DEVICE
+#   BIOS + GPT Partitions:
+#   - 1M     BIOS Boot  no-fs
+#   - %FREE  Linux LVM
+# > sudo cryptsetup luksFormat [--type=luks1] /dev/$PARTITION
+# > sudo cryptsetup open /dev/$PARTITION luks-$LVM_LABEL
+# > sudo pvcreate /dev/mapper/luks-$LVM_LABEL
+# > sudo vgcreate vg_$LVM_LABEL /dev/mapper/luks-$LVM_LABEL
+# > sudo lvcreate --name=swap -L <2xRAM>  vg_$LVM_LABEL
+# > sudo lvcreate --name=root -L <32G+>   vg_$LVM_LABEL
+# > sudo lvcreate --name=home -l 100%FREE vg_$LVM_LABEL
+# Libreboot (hardcoded LVM names):
+# > sudo vgrename vg_$LVM_LABEL matrix
+# > sudo lvrename /dev/matrix/root /dev/matrix/rootvol
+# --
+# > sudo void-installer
+#   Source: Network
+#   Bootloader: None
+#   Partition: Skip
+#   Filesystems: Use vg_$LVM_LABEL-<LV_LABEL> with fstype:none
+#   Reboot: No
+# > sudo mount /dev/vg_$LVM_LABEL/root /mnt
+# > for dir in dev proc sys ; do sudo mount --rbind /$dir /mnt/$dir --make-rslave ; done
+# > sudo chroot /mnt bash
+# Re-export {DEVICE,PARTITION,LVM_LABEL}
+# # echo GRUB_ENABLE_CRYPTODISK=y >> /etc/default/grub
+# Add "rd.auto" to /etc/default/grub:GRUB_CMDLINE_LINUX_DEFAULT
+#  OR "rd.luks.uuid=<UUID-prefix>" where <UUID> is:
+#   > blkid /dev/$PARTITION -s UUID -o value
+# LUKS Keyfile (optional):
+# # dd bs=1 count=64 if=/dev/random of=/boot/luks-$LVM_LABEL.key
+# # cryptsetup luksAddKey /dev/$PARTITION /boot/luks-$LVM_LABEL.key
+# # chmod 0000 /boot/luks-$LVM_LABEL.key
+# # chmod -R g=,o= /boot
+# # echo "luks-$LVM_LABEL  /dev/$PARTITION  /boot/luks-$LVM_LABEL.key" >> /etc/crypttab
+# # echo "install_items+=\" /boot/luks-$LVM_LABEL.key /etc/crypttab \"" >> \
+#           /etc/dracut.conf.d/10-crypt.conf
+# --
+# # grub-install /dev/$DEVICE
+# # xbps-reconfigure --force --all
+# # exit
+# > sudo umount -R /mnt
+# > sudo poweroff
 
 
 usage() {
-    printf 'usage: %s [-F (nonfree)] [-S (xbps-src)] [-M MIRROR]\n' "$0"
+    >&2 printf 'usage: %s [-U (no-usb)] [-F (nonfree)]\n' "$0"
     exit 3
 }
 
+no_usb=false
 nonfree=false
-xbps_src=false
-mirror=mirrors.servercentral.com/voidlinux
-mirror_default=alpha.de.repo.voidlinux.org
 
-while getopts hFSM: opt; do
+while getopts hUF opt; do
     case $opt in
         h|\?)  usage ;;
+        U)  no_usb=true ;;
         F)  nonfree=true ;;
-        S)  xbps_src=true ;;
-        M)  mirror=$OPTARG ;;
     esac
 done
 shift $((OPTIND-1))
@@ -55,48 +110,25 @@ xbps_install() {
 
 set -x
 
-xbps_install --sync
-
 if [ $nonfree = true ]; then
     xbps_install void-repo-nonfree
 fi
 
-# USA mirror
-sudo cp -a /usr/share/xbps.d/*-repository-*.conf /etc/xbps.d/
-sudo sed -i "s|$mirror_default|$mirror|" /etc/xbps.d/*
-
-for _ in 1 2 3; do
-    xbps_install --sync --update
-done
+# Update
+xbps_install --sync xbps
+xbps_install --sync --update
 
 # Git
 xbps_install git
-
-# xbps-src
-SRC_DIR=/usr/src
-XBPS_SRC_DIR=$SRC_DIR/void-packages
-if [ $xbps_src = true ]; then
-    if [ -d $XBPS_SRC_DIR ]; then
-        $XBPS_SRC_DIR/xbps-src bootstrap-update
-    else
-        sudo git -C $SRC_DIR clone --depth=1 git://github.com/void-linux/void-packages.git
-        echo XBPS_ALLOW_RESTRICTED=yes | sudo tee -a $XBPS_SRC_DIR/etc/conf
-        sudo sed -i "s|$mirror_default|$mirror|" $XBPS_SRC_DIR/etc/xbps.d/*
-        sudo chgrp -R xbuilder $XBPS_SRC_DIR
-        sudo chmod -R g+wX $XBPS_SRC_DIR
-        find $XBPS_SRC_DIR -type d -exec sudo chmod g+s {} +
-        $XBPS_SRC_DIR/xbps-src binary-bootstrap
-    fi
-fi
 
 # XBPS tools
 xbps_install xtools
 
 # USB firewall
 xbps_install usbguard
-sudo mkdir -m 0700 /etc/usbguard/IPCAccessControl.d  # TODO REMOVE: Dir missing from package
+sudo mkdir -p -m 0700 /etc/usbguard/IPCAccessControl.d  # TODO REMOVE: Dir missing from package
 # sudo usbguard add-user --group wheel --devices=ALL --policy=list --exceptions=ALL
-usbguard generate-policy | sudo tee -a /etc/usbguard/rules.conf
+usbguard generate-policy | sudo tee /etc/usbguard/rules.conf
 sudo ln -s /etc/sv/usbguard /var/service/ || [ $? -eq 1 ]
 
 # Network firewall
@@ -105,6 +137,9 @@ xbps_install ufw
 sudo ufw allow ssh
 sudo ufw enable
 sudo ln -s /etc/sv/ufw /var/service/ || [ $? -eq 1 ]
+
+# OpenSSH daemon
+sudo ln -s /etc/sv/sshd /var/service/ || [ $? -eq 1 ]
 
 # NTP alternative
 xbps_install chrony
@@ -123,15 +158,21 @@ EOF
 sudo chmod +x /etc/cron.weekly/fstrim
 
 # GRUB
+## UX
 sudo sed -i '/GRUB_BACKGROUND/s|^#||' /etc/default/grub
 sudo sed -i '/GRUB_TIMEOUT/s|=[0-9]\+|=1|' /etc/default/grub
-## Default USB authorize internal devices only
-sudo sed -i '/GRUB_CMDLINE_LINUX_DEFAULT/s|"$| usbcore.authorized_default=2"|' /etc/default/grub
+## USB authorize internal devices only
+usb_auth='usbcore.authorized_default=2'
+if [ $no_usb = true ]; then
+    grep $usb_auth /etc/default/grub || \
+            sudo sed -i "/GRUB_CMDLINE_LINUX_DEFAULT/s|\"$| $usb_auth&|" /etc/default/grub
+fi
 sudo update-grub
 
 # Keymap
 # sudo sed -i '/KEYMAP/s|=us|="us ctrl"|' /etc/rc.conf  # Swaps Caps_Lock//Control
-sudo tee -a /etc/rc.local <<-EOF > /dev/null
+grep 's|Caps_Lock|Control|' /etc/rc.local || \
+        sudo tee -a /etc/rc.local <<-EOF > /dev/null
 
 	dumpkeys | sed 's|Caps_Lock|Control|' | loadkeys
 EOF

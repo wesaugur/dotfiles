@@ -1,0 +1,73 @@
+#!/bin/sh
+set -eu
+
+# Quickstart:
+# > su
+# # cp -ai /etc/examples/doas.conf /etc/
+# # exit
+# > ftp -o- https://git.io/openbsd-firstboot | sh 2>&1 | tee -a openbsd-firstboot.log
+# > ftp -o- https://wesaugur.sh | sh 2>&1 | tee -a dotfiles-install.log
+# > chsh -s /usr/local/bin/fish
+# > logout
+# > dotfiles-fixup
+# > dim_fish_prompt
+# > man afterboot
+# > doas reboot
+
+# Full Disk Encryption - https://www.openbsd.org/faq/faq14.html#softraidFDE
+# - OpenBSD Installer: choose (S)hell
+# # sysctl hw.disknames
+# # export DEVICE=<DEVICE>(sd0)
+# # cd /dev && sh MAKEDEV $DEVICE
+# # fdisk $DEVICE
+# # disklabel -h $DEVICE
+# # dd if=/dev/urandom of=/dev/r${DEVICE}c bs=1M
+# # fdisk -i $DEVICE
+# # disklabel -E $DEVICE
+# $DEVICE> a (add partition; accept defaults)
+# size: *
+# FS type: RAID
+# $DEVICE> w
+# $DEVICE> q
+# # bioctl -c C -l ${DEVICE}a softraid0
+# # export CRYPTO_DEVICE=<DEVICE>(sd2)
+# # cd /dev && sh MAKEDEV $CRYPTO_DEVICE
+# # dd if=/dev/zero of=/dev/r${CRYPTO_DEVICE}c bs=1M count=1
+# # exit
+# - Install onto $CRYPTO_DEVICE
+
+
+pkg_add() {
+    doas pkg_add "$@"
+}
+
+append_once() {
+    user="$1"
+    path="$2"
+    line="$3"
+    doas -u "$user" grep "^$line$" "$path" > /dev/null || \
+            echo "$line" | doas -u "$user" tee -a "$path" > /dev/null
+}
+
+set -x
+
+append_once root /etc/doas.conf    'permit keepenv persist :wheel'
+append_once root /etc/daily.local  'syspatch -c'
+append_once root /etc/mail/aliases "root: $USER"
+
+# Update
+doas syspatch || [ $? -eq 2 ]
+doas fw_update
+pkg_add -u
+
+# Git
+pkg_add git
+
+# Console
+doas cp -ai /etc/examples/wsconsctl.conf /etc/
+append_once root /etc/wsconsctl.conf 'keyboard.map+="keysym Caps_Lock = Control_L"'
+TERM=pccon
+doas sed -i "/^ttyC/s|	vt220|	$TERM|" /etc/ttys
+
+set +x
+echo "[ $(tput setaf 2)OK$(tput sgr0) ] openbsd-firstboot"

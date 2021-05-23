@@ -50,5 +50,10 @@ abbr_alias tt='exec tmux new -A -s "$TMUX_SESSION_NAME"'
 [ ! "$FISH_VERSION" ] && command -v direnv > /dev/null && \
     eval 'eval "$(direnv hook $0)"'
 
+[   "$FISH_VERSION" ] && command -v pyenv > /dev/null && \
+    eval 'pyenv init - | source  && pyenv virtualenv-init - | source'
+[ ! "$FISH_VERSION" ] && command -v pyenv > /dev/null && \
+    eval 'eval "$(pyenv init -)" && eval "$(pyenv virtualenv-init -)"'
+
 # shellcheck disable=SC1090  # Don't follow $ENV.local
 [ -f "$ENV.local" ] && . "$ENV.local"  # ~/.shrc.local

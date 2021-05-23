@@ -36,6 +36,9 @@ sudo apt-get --assume-yes --auto-remove --purge dist-upgrade
 apt_install_backport git      # Fixes dotfiles git stash author default
 apt_install_backport fish     # Fixes ancient fish shell
 apt_install_backport tmux     # Fixes '\\' keybinding
-apt_install_backport vim-nox  # Adds python support for org-mode
+# apt_install_backport vim-nox  # Adds python support for org-mode
 
 sudo apt-get clean
+
+set +x
+echo "[ $(tput setaf 2)OK$(tput sgr0) ] debian-firstboot"
