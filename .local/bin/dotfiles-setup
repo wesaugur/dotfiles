@@ -198,6 +198,7 @@ mac() {
 
     # Stubby: DNS-over-TLS
     # FIXME: stubby has high latency
+    # ln -s "$HOME/.config/stubby/stubby.yml" "$HOME/.stubby.yml" || [ $? -eq 1 ]
     # brew_install stubby
     # sudo brew services start stubby
     # stubby_setdns_macos="$(brew --prefix)/sbin/stubby-setdns-macos.sh"

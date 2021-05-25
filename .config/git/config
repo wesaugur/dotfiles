@@ -1,4 +1,4 @@
-# ~/.gitconfig
+# ~/.config/git/config
 
 [user]
     useConfigOnly = true
