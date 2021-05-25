@@ -39,7 +39,7 @@ post() {
     PATH="$PATH:$HOME/.local/bin" git -C "$HOME/.vim/pack/git-packages" recursive pull
 
     echo "[ $(tput setaf 2)OK$(tput sgr0) ] dotfiles-setup"
-    echo "$(tput setaf 3)REMINDER$(tput sgr0)> exec \$SHELL --login"
+    echo "$(tput setaf 3)REMINDER$(tput sgr0)> exec \$SHELL -l"
 
     fish="$(command -v fish)" && [ "$SHELL" != "$fish" ] && \
         echo "$(tput setaf 3)REMINDER$(tput sgr0)> chsh -s $fish"
@@ -53,6 +53,8 @@ openbsd() {
         doas pkg_add "$@"
     }
 
+    set -x  # HACK: ksh posix emulation drops xtrace
+
     [ "$TERM" = vt220 ] && TERM=pccon
 
     pkg_add curl
@@ -64,7 +66,7 @@ openbsd() {
     # TODO: fd-find not in packages/ports
 
     # TODO: For OpenBSD<=6.9; later releases should check $XDG_CONFIG_HOME
-    ln -s "$HOME/.config/tmux/tmux.conf" "$HOME/.tmux.conf"
+    ln -s "$HOME/.config/tmux/tmux.conf" "$HOME/.tmux.conf"  || [ $? -eq 1 ]
 
     pkg_add colorls
     doas ln -s "$(command -v colorls)" "$HOME/.local/bin/ls" || [ $? -eq 1 ]
