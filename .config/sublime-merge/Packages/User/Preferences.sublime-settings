@@ -1,0 +1,10 @@
+// Linux:                     ~/.config/sublime-merge/Packages/User/Preferences.sublime-settings
+//   Mac: ~/Library/Application Support/Sublime Merge/Packages/User/Preferences.sublime-settings
+
+{
+    "font_size": 18,
+    "theme": "auto",
+    "time_format": "24h",
+    "translate_tabs_to_spaces": true,
+    "trim_trailing_white_space_on_save": true,
+}
