@@ -191,9 +191,11 @@ mac() {
     brew_cask_install kitty
 
     brew_cask_install sublime-text
+    ln -snf "$HOME/.config/sublime-text" \
+            "$HOME/Library/Application Support/Sublime Text"
     brew_cask_install sublime-merge
-    ln -snf "$HOME/.config/sublime-text-3" \
-            "$HOME/Library/Application Support/Sublime Text 3"
+    ln -snf "$HOME/.config/sublime-merge" \
+            "$HOME/Library/Application Support/Sublime Merge"
 
     # TODO: MacOS (>= 11) DNS-over-TLS via Profiles
     # https://github.com/paulmillr/encrypted-dns
