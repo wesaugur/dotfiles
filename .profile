@@ -1,6 +1,7 @@
 # ~/.profile
 # shellcheck shell=sh
 # shellcheck disable=SC1090  # Don't follow non-constant source
+# shellcheck disable=SC1091  # Don't follow external source
 # COMPATIBILITY: POSIX sh, bash, ksh, zsh, fish
 
 export ENV="$HOME/.shrc"  # Run Commands for POSIX interactive shells
@@ -44,6 +45,7 @@ export PATH="$HOME/.pyenv/bin:$PATH"
 [ ! "$FISH_VERSION" ] && command -v pyenv > /dev/null && \
     eval 'eval "$(pyenv init --path)"'
 
-[ "$BASH_VERSION" ] && [ "$PS1" ] && [ -f ~/.bashrc ] && . ~/.bashrc
+[ "$BASH_VERSION" ] && [ "$PS1" ] && [ -f ~/.bashrc ]      && . ~/.bashrc
+[ "$KSH_VERSION" ]  && [ "$PS1" ] && [ -f /etc/ksh.kshrc ] && . /etc/ksh.kshrc
 
 [ -f ~/.profile.local ] && . ~/.profile.local

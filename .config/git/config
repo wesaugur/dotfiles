@@ -1,4 +1,4 @@
-# ~/.gitconfig
+# ~/.config/git/config
 
 [user]
     useConfigOnly = true
@@ -21,7 +21,7 @@
     push-force = push --force-with-lease
 
 [core]
-    pager = diff-highlight | $PAGER
+    pager = diff-highlight || cat | $PAGER
 
 [pager]
     status = true

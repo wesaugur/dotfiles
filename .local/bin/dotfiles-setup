@@ -39,7 +39,7 @@ post() {
     PATH="$PATH:$HOME/.local/bin" git -C "$HOME/.vim/pack/git-packages" recursive pull
 
     echo "[ $(tput setaf 2)OK$(tput sgr0) ] dotfiles-setup"
-    echo "$(tput setaf 3)REMINDER$(tput sgr0)> exec \$SHELL --login"
+    echo "$(tput setaf 3)REMINDER$(tput sgr0)> exec \$SHELL -l"
 
     fish="$(command -v fish)" && [ "$SHELL" != "$fish" ] && \
         echo "$(tput setaf 3)REMINDER$(tput sgr0)> chsh -s $fish"
@@ -53,18 +53,21 @@ openbsd() {
         doas pkg_add "$@"
     }
 
+    set -x  # HACK: ksh posix emulation drops xtrace
+
     [ "$TERM" = vt220 ] && TERM=pccon
 
     pkg_add curl
     pkg_add git git-lfs git-crypt
     pkg_add fish direnv vim--no_x11 python3
-    pkg_add htop pv moreutils bash-completion universal-ctags--iconv fzf ripgrep
+    pkg_add htop pv moreutils universal-ctags--iconv fzf ripgrep
     pkg_add gnupg
     pkg_add age
     # TODO: fd-find not in packages/ports
+    # NOTE: bash,bash-completion skipped
 
     # TODO: For OpenBSD<=6.9; later releases should check $XDG_CONFIG_HOME
-    ln -s "$HOME/.config/tmux/tmux.conf" "$HOME/.tmux.conf"
+    ln -s "$HOME/.config/tmux/tmux.conf" "$HOME/.tmux.conf"  || [ $? -eq 1 ]
 
     pkg_add colorls
     doas ln -s "$(command -v colorls)" "$HOME/.local/bin/ls" || [ $? -eq 1 ]
@@ -72,6 +75,11 @@ openbsd() {
     # pkg_add tree
     pkg_add colortree
     doas ln -s "$(command -v colortree)" /usr/local/bin/tree || [ $? -eq 1 ]
+
+    fish_vendor_functions_d="$(pkg-config --variable=functionsdir fish)"
+    doas mkdir -p "$fish_vendor_functions_d"
+    doas ln -s "/usr/local/share/fish/functions/fzf-key-bindings.fish" \
+            "$fish_vendor_functions_d/fzf_key_bindings.fish" || [ $? -eq 1 ]
 }
 
 freebsd() {
@@ -189,15 +197,18 @@ mac() {
     brew_cask_install kitty
 
     brew_cask_install sublime-text
+    ln -snf "$HOME/.config/sublime-text" \
+            "$HOME/Library/Application Support/Sublime Text"
     brew_cask_install sublime-merge
-    ln -snf "$HOME/.config/sublime-text-3" \
-            "$HOME/Library/Application Support/Sublime Text 3"
+    ln -snf "$HOME/.config/sublime-merge" \
+            "$HOME/Library/Application Support/Sublime Merge"
 
     # TODO: MacOS (>= 11) DNS-over-TLS via Profiles
     # https://github.com/paulmillr/encrypted-dns
 
     # Stubby: DNS-over-TLS
     # FIXME: stubby has high latency
+    # ln -s "$HOME/.config/stubby/stubby.yml" "$HOME/.stubby.yml" || [ $? -eq 1 ]
     # brew_install stubby
     # sudo brew services start stubby
     # stubby_setdns_macos="$(brew --prefix)/sbin/stubby-setdns-macos.sh"

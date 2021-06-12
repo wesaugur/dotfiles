@@ -36,6 +36,14 @@ set -eu
 # Disk Wiping:
 # > sudo dd if=/dev/urandom of=/dev/$DEVICE status=progress bs=1M
 
+# Disk Encryption:
+# > sudo cryptsetup luksFormat /dev/$DEVICE
+# > sudo cryptsetup open /dev/$DEVICE luks-$LABEL
+# > sudo mkfs.ext4 /dev/mapper/luks-$LABEL -L luks-$LABEL
+# > sudo mount /dev/mapper/luks-$LABEL /mnt
+# > sudo umount /mnt
+# > sudo cryptsetup close luks-$LABEL
+
 # Full Disk Encryption - https://docs.voidlinux.org/installation/guides/fde.html
 #                      - https://docs.voidlinux.org/installation/guides/chroot.html
 # > lsblk
