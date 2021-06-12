@@ -60,10 +60,11 @@ openbsd() {
     pkg_add curl
     pkg_add git git-lfs git-crypt
     pkg_add fish direnv vim--no_x11 python3
-    pkg_add htop pv moreutils bash-completion universal-ctags--iconv fzf ripgrep
+    pkg_add htop pv moreutils universal-ctags--iconv fzf ripgrep
     pkg_add gnupg
     pkg_add age
     # TODO: fd-find not in packages/ports
+    # NOTE: bash,bash-completion skipped
 
     # TODO: For OpenBSD<=6.9; later releases should check $XDG_CONFIG_HOME
     ln -s "$HOME/.config/tmux/tmux.conf" "$HOME/.tmux.conf"  || [ $? -eq 1 ]
@@ -74,6 +75,11 @@ openbsd() {
     # pkg_add tree
     pkg_add colortree
     doas ln -s "$(command -v colortree)" /usr/local/bin/tree || [ $? -eq 1 ]
+
+    fish_vendor_functions_d="$(pkg-config --variable=functionsdir fish)"
+    doas mkdir -p "$fish_vendor_functions_d"
+    doas ln -s "/usr/local/share/fish/functions/fzf-key-bindings.fish" \
+            "$fish_vendor_functions_d/fzf_key_bindings.fish" || [ $? -eq 1 ]
 }
 
 freebsd() {

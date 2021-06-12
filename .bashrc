@@ -19,6 +19,7 @@ done
 for prefix in \
     /usr/share/doc/fzf \
     /usr/share/doc/fzf/examples \
+    /usr/local/share/fzf/bash \
     $(command -v brew > /dev/null && brew --prefix)/opt/fzf/shell
 do
     fzf_key_bindings_bash="$prefix/key-bindings.bash"
