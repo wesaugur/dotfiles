@@ -16,6 +16,7 @@ tmp_work_tree="$HOME/.$REPO.tmp"
 git clone --quiet "$GIT_URL" --separate-git-dir="$GIT_DIR" "$tmp_work_tree"
 
 export GIT_WORK_TREE="$HOME"  # git magic env-var
+cd "$GIT_WORK_TREE"
 git checkout-index --all || { [ $? -eq 1 ] && \
     git stash push --message="Pre-Existing Dotfiles (auto-stashed)" && \
     git --no-pager stash show --name-status ; }
