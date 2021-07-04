@@ -8,7 +8,7 @@ set -eu
 # > ftp -o- https://git.io/openbsd-firstboot | sh 2>&1 | tee -a openbsd-firstboot.log
 # > ftp -o- https://wesaugur.sh | sh 2>&1 | tee -a dotfiles-install.log
 # > chsh -s /usr/local/bin/fish
-# > logout
+# > exit
 # > dotfiles-fixup
 # > dim_fish_prompt
 # > man afterboot
@@ -35,6 +35,8 @@ set -eu
 # # dd if=/dev/zero of=/dev/r${CRYPTO_DEVICE}c bs=1M count=1
 # # exit
 # - Install onto $CRYPTO_DEVICE
+
+# TODO: autoinstall(8); see homedir.git/.local/share/openbsd/install.conf
 
 
 pkg_add() {
