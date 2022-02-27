@@ -20,6 +20,9 @@
     squash   = rebase --interactive  # usage: "git squash HEAD~N" where N is # of commits to squash
     push-force = push --force-with-lease
 
+[init]
+    defaultBranch = master
+
 [core]
     pager = ( diff-highlight || cat ) | $PAGER
 
