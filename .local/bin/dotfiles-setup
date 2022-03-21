@@ -163,7 +163,7 @@ mac() {
     grep "$brew_bash" /etc/shells || echo "$brew_bash" | sudo tee -a /etc/shells
 
     brew_install git git-lfs git-crypt
-    ln -sf "$(brew --prefix)/share/git-core/contrib/diff-highlight/diff-highlight" \
+    sudo ln -sf "$(brew --prefix)/share/git-core/contrib/diff-highlight/diff-highlight" \
             /usr/local/bin
     git config --file="$HOME/.gitconfig.local" credential.helper osxkeychain
 

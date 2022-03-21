@@ -8,7 +8,7 @@ XBPS_SRC_DIR=$SRC_DIR/void-packages
 if [ -x $XBPS_SRC_DIR/xbps-src ]; then
     $XBPS_SRC_DIR/xbps-src bootstrap-update
 else
-    sudo git -C $SRC_DIR clone --depth=1 git://github.com/void-linux/void-packages.git
+    sudo git -C $SRC_DIR clone --depth=1 https://github.com/void-linux/void-packages.git
     echo XBPS_ALLOW_RESTRICTED=yes | sudo tee -a $XBPS_SRC_DIR/etc/conf
     command -v void-repo-mirror-setup && void-repo-mirror-setup
     sudo chgrp -R xbuilder $XBPS_SRC_DIR
