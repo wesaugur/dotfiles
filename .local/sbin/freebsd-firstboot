@@ -1,0 +1,12 @@
+#!/bin/sh
+set -eu
+
+# Quickstart:
+# TODO
+
+set -x
+
+# TODO
+
+set +x
+echo "[ $(tput setaf 2)OK$(tput sgr0) ] freebsd-firstboot"
