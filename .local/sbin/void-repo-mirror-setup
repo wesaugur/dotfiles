@@ -3,7 +3,7 @@
 # https://docs.voidlinux.org/xbps/repositories/mirrors/changing.html
 
 mirror_new=mirrors.servercentral.com/voidlinux
-mirror_old=alpha.de.repo.voidlinux.org
+mirror_old=repo-default.voidlinux.org
 
 usage() {
     >&2 printf 'usage: %s [-M MIRROR]\n' "$0"
