@@ -127,7 +127,7 @@ debian_linux() {
     apt_install fish direnv vim tmux python3
     apt_install htop pv moreutils bash-completion ctags fzf fd-find tree ripgrep
     apt_install gnupg scdaemon
-    apt_install signify-openbsd # age  # TODO: in Debian 11
+    apt_install signify-openbsd age
     # apt_install magic-wormhole
 
     sudo ln -s "$(command -v fdfind)" /usr/local/bin/fd || [ $? -eq 1 ]
