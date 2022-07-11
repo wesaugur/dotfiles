@@ -1,6 +1,6 @@
 #!/bin/sh -eu
 
-git_url_base=git://github.com
+git_url_base=https://github.com
 vim_pack_dir=$HOME/.vim/pack/git-packages/start
 
 usage() {

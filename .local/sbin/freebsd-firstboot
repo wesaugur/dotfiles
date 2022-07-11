@@ -1,0 +1,13 @@
+#!/bin/sh
+set -eu
+
+# Quickstart:
+# > fetch -o- https://git.io/freebsd-firstboot | sh 2>&1 | tee -a freebsd-firstboot.log
+# > fetch -o- https://wesaugur.sh | sh 2>&1 | tee -a dotfiles-install.log
+
+set -x
+
+# TODO
+
+set +x
+echo "[ $(tput setaf 2)OK$(tput sgr0) ] freebsd-firstboot"

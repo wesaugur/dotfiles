@@ -21,6 +21,10 @@ set -eu
 # - 32G+   Linux Root (<arch>)  xfs
 # - %FREE  Linux Home           xfs
 
+# Libreboot Boot:
+# grub> cryptomount -a
+# grub> configfile (lvm/matrix-rootvol)/boot/grub/grub.cfg
+
 # Libreboot X200:
 # - "DMAR: Failed to map dmar2" is a non-critical warning
 #   Fix (optional): GRUB kernel boot parameter "intremap=off"
@@ -40,6 +44,8 @@ set -eu
 # > sudo cryptsetup luksFormat /dev/$DEVICE
 # > sudo cryptsetup open /dev/$DEVICE luks-$LABEL
 # > sudo mkfs.ext4 /dev/mapper/luks-$LABEL -L luks-$LABEL
+#
+# > sudo cryptsetup open /dev/$DEVICE luks-$LABEL
 # > sudo mount /dev/mapper/luks-$LABEL /mnt
 # > sudo umount /mnt
 # > sudo cryptsetup close luks-$LABEL
@@ -72,6 +78,7 @@ set -eu
 #   Filesystems: Use vg_$LVM_LABEL-<LV_LABEL> with fstype:none
 #   Reboot: No
 # > sudo mount /dev/vg_$LVM_LABEL/root /mnt
+# > sudo xbps-install --rootdir=/mnt --sync cryptsetup lvm2
 # > for dir in dev proc sys ; do sudo mount --rbind /$dir /mnt/$dir --make-rslave ; done
 # > sudo chroot /mnt bash
 # Re-export {DEVICE,PARTITION,LVM_LABEL}
