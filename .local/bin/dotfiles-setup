@@ -198,6 +198,8 @@ mac() {
 
     brew_install magic-wormhole
 
+    brew_cask_install 1password 1password-cli
+
     brew_cask_install kitty
     brew_cask_install boltai
 
