@@ -6,6 +6,7 @@
 
 export ENV="$HOME/.shrc"  # Run Commands for POSIX interactive shells
 
+[ -f /opt/homebrew/bin/brew ] && eval "$(/opt/homebrew/bin/brew shellenv)"
 export PATH="$HOME/.local/bin:$HOME/.local/sbin:$PATH"
 
 export EDITOR=vim
@@ -38,8 +39,6 @@ pgrep -u "$USER" ssh-agent > /dev/null && [ ! -f "$SSH_AGENT_ENV" ] && \
 pgrep -u "$USER" ssh-agent > /dev/null || \
     ssh-agent $ssh_agent_args > "$SSH_AGENT_ENV"
 [ "$SSH_AUTH_SOCK" ] || . "$SSH_AGENT_ENV" > /dev/null
-
-[ -f /opt/homebrew/bin/brew ] && eval "$(/opt/homebrew/bin/brew shellenv)"
 
 export PATH="$HOME/.pyenv/bin:$PATH"
 [   "$FISH_VERSION" ] && command -v pyenv > /dev/null && \
