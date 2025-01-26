@@ -194,7 +194,6 @@ mac() {
     ln -s "$(brew --prefix)/opt/fzf/plugin/fzf.vim" \
             "$vimfiles_dir/plugin" || [ $? -eq 1 ]
 
-    brew tap filippo.io/age https://filippo.io/age
     brew_install age  # https://age-encryption.org/
 
     brew_install magic-wormhole
