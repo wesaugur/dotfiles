@@ -15,3 +15,8 @@ ${SECTION}Movement${C_RESET}
 
 ${CMD}:h${OPT}[elp] ${ARG}quickref${C_RESET}
 EOF
+# ctrl-[ == ESC
+# ZZ == :x ~= :wq but only writes if modified
+# ctrl-w | maximize current window, like only, but don't close other
+# ctrl-w _
+# ctrl-w T = move to own tab

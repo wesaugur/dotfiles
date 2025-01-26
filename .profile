@@ -6,6 +6,7 @@
 
 export ENV="$HOME/.shrc"  # Run Commands for POSIX interactive shells
 
+[ -f /opt/homebrew/bin/brew ] && eval "$(/opt/homebrew/bin/brew shellenv)"
 export PATH="$HOME/.local/bin:$HOME/.local/sbin:$PATH"
 
 export EDITOR=vim
