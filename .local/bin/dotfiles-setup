@@ -178,8 +178,10 @@ mac() {
     brew_install direnv vim tmux python
     brew_install htop pv moreutils bash-completion@2 ctags fzf fd tree ripgrep
     brew_install gnupg
-    brew_install signify-osx
+    brew_install signify-osx age
+    brew_install nextdns
     brew_install node  # For GitHub Copilot
+    brew_install magic-wormhole
 
     fish_vendor_functions_d="$(pkg-config --variable=functionsdir fish)"
     mkdir -p "$fish_vendor_functions_d"
@@ -193,10 +195,6 @@ mac() {
     mkdir -p "$vimfiles_dir/plugin"
     ln -s "$(brew --prefix)/opt/fzf/plugin/fzf.vim" \
             "$vimfiles_dir/plugin" || [ $? -eq 1 ]
-
-    brew_install age  # https://age-encryption.org/
-
-    brew_install magic-wormhole
 
     brew_cask_install 1password 1password-cli
 
