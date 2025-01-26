@@ -184,6 +184,7 @@ mac() {
     brew_install node  # For GitHub Copilot
     brew_install magic-wormhole
 
+    brew_install pkgconf
     fish_vendor_functions_d="$(pkg-config --variable=functionsdir fish)"
     mkdir -p "$fish_vendor_functions_d"
     ln -s "$(brew --prefix)/opt/fzf/shell/key-bindings.fish" \
