@@ -31,7 +31,7 @@ post() {
     for vim_pack in \
         github/copilot.vim \
         tpope/vim-sensible tpope/vim-vinegar tpope/vim-commentary \
-        ludovicchabant/vim-gutentags ackyshake/VimCompletesMe \
+        ludovicchabant/vim-gutentags \
         junegunn/fzf.vim airblade/vim-rooter \
         jceb/vim-orgmode tpope/vim-speeddating
     do
