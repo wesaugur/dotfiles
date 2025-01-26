@@ -29,6 +29,7 @@ post() {
     set +x
 
     for vim_pack in \
+        github/copilot.vim \
         tpope/vim-sensible tpope/vim-vinegar tpope/vim-commentary \
         ludovicchabant/vim-gutentags ackyshake/VimCompletesMe \
         junegunn/fzf.vim airblade/vim-rooter \
@@ -63,6 +64,7 @@ openbsd() {
     pkg_add htop pv moreutils universal-ctags--iconv fzf ripgrep
     pkg_add gnupg
     pkg_add age
+    pkg_add node  # For GitHub Copilot
     # TODO: fd-find not in packages/ports
     # NOTE: bash,bash-completion skipped
 
@@ -101,6 +103,7 @@ void_linux() {
     xbps_install gnupg2-scdaemon pcsclite pcsc-ccid && \
             { sudo ln -s /etc/sv/pcscd /var/service/ || [ $? -eq 1 ] ; }
     xbps_install signify age
+    xbps_install nodejs  # For GitHub Copilot
     # xbps_install magic-wormhole
 
     sudo ln -s "$(command -v moreutils_ts)" /usr/local/bin/ts || [ $? -eq 1 ]
@@ -128,6 +131,7 @@ debian_linux() {
     apt_install htop pv moreutils bash-completion ctags fzf fd-find tree ripgrep
     apt_install gnupg scdaemon
     apt_install signify-openbsd age
+    apt_install nodejs  # For GitHub Copilot
     # apt_install magic-wormhole
 
     sudo ln -s "$(command -v fdfind)" /usr/local/bin/fd || [ $? -eq 1 ]
@@ -175,6 +179,7 @@ mac() {
     brew_install htop pv moreutils bash-completion@2 ctags fzf fd tree ripgrep
     brew_install gnupg
     brew_install signify-osx
+    brew_install node  # For GitHub Copilot
 
     fish_vendor_functions_d="$(pkg-config --variable=functionsdir fish)"
     mkdir -p "$fish_vendor_functions_d"
@@ -195,6 +200,7 @@ mac() {
     brew_install magic-wormhole
 
     brew_cask_install kitty
+    brew_cask_install boltai
 
     brew_cask_install sublime-text
     ln -snf "$HOME/.config/sublime-text" \
