@@ -181,7 +181,6 @@ mac() {
     brew_install htop pv moreutils bash-completion@2 ctags fzf fd tree ripgrep
     brew_install gnupg
     brew_install signify-osx age
-    brew_install nextdns
     brew_install node  # For GitHub Copilot
     brew_install magic-wormhole
 
