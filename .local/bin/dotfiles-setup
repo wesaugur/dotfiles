@@ -198,10 +198,7 @@ mac() {
     ln -s "$(brew --prefix)/opt/fzf/plugin/fzf.vim" \
             "$vimfiles_dir/plugin" || [ $? -eq 1 ]
 
-    brew_cask_install 1password 1password-cli
-
     brew_cask_install kitty
-    brew_cask_install boltai
 
     brew_cask_install sublime-text
     ln -snf "$HOME/.config/sublime-text" \
