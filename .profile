@@ -40,11 +40,12 @@ pgrep -u "$USER" ssh-agent > /dev/null || \
     ssh-agent $ssh_agent_args > "$SSH_AGENT_ENV"
 [ "$SSH_AUTH_SOCK" ] || . "$SSH_AGENT_ENV" > /dev/null
 
-export PATH="$HOME/.pyenv/bin:$PATH"
-[   "$FISH_VERSION" ] && command -v pyenv > /dev/null && \
-    eval 'pyenv init --path | source'
-[ ! "$FISH_VERSION" ] && command -v pyenv > /dev/null && \
-    eval 'eval "$(pyenv init --path)"'
+# TODO: Deprecate pyenv
+# export PATH="$HOME/.pyenv/bin:$PATH"
+# [   "$FISH_VERSION" ] && command -v pyenv > /dev/null && \
+#     eval 'pyenv init --path | source'
+# [ ! "$FISH_VERSION" ] && command -v pyenv > /dev/null && \
+#     eval 'eval "$(pyenv init --path)"'
 
 [ "$BASH_VERSION" ] && [ "$PS1" ] && [ -f ~/.bashrc ]      && . ~/.bashrc
 [ "$KSH_VERSION" ]  && [ "$PS1" ] && [ -f /etc/ksh.kshrc ] && . /etc/ksh.kshrc
