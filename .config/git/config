@@ -21,7 +21,7 @@
     push-force = push --force-with-lease
 
 [init]
-    defaultBranch = master
+    defaultBranch = main
 
 [core]
     pager = ( diff-highlight || cat ) | $PAGER
