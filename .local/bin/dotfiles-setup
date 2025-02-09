@@ -65,6 +65,7 @@ openbsd() {
     pkg_add gnupg
     pkg_add age
     pkg_add node  # For GitHub Copilot
+    # TODO: uv not in packages/ports; install from upstream
     # TODO: fd-find not in packages/ports
     # NOTE: bash,bash-completion skipped
 
@@ -97,7 +98,7 @@ void_linux() {
 
     xbps_install curl make
     xbps_install git git-lfs git-crypt
-    xbps_install fish-shell direnv vim tmux python3
+    xbps_install fish-shell direnv vim tmux python3 uv
     xbps_install htop pv moreutils bash-completion ctags fzf fd tree ripgrep
     xbps_install gnupg2 && (cd /usr/bin ; [ -e gpg ] || sudo ln -s gpg2 gpg)
     xbps_install gnupg2-scdaemon pcsclite pcsc-ccid && \
@@ -132,6 +133,8 @@ debian_linux() {
     apt_install gnupg scdaemon
     apt_install signify-openbsd age
     apt_install nodejs  # For GitHub Copilot
+    # TODO: uv not in apt; install from upstream
+
     # apt_install magic-wormhole
 
     sudo ln -s "$(command -v fdfind)" /usr/local/bin/fd || [ $? -eq 1 ]
@@ -177,11 +180,10 @@ mac() {
     fish="$(command -v fish)"
     grep "$fish" /etc/shells || echo "$fish" | sudo tee -a /etc/shells
 
-    brew_install direnv vim tmux python
+    brew_install direnv vim tmux python uv
     brew_install htop pv moreutils bash-completion@2 ctags fzf fd tree ripgrep
     brew_install gnupg
     brew_install signify-osx age
-    brew_install nextdns
     brew_install node  # For GitHub Copilot
     brew_install magic-wormhole
 
@@ -199,10 +201,7 @@ mac() {
     ln -s "$(brew --prefix)/opt/fzf/plugin/fzf.vim" \
             "$vimfiles_dir/plugin" || [ $? -eq 1 ]
 
-    brew_cask_install 1password 1password-cli
-
     brew_cask_install kitty
-    brew_cask_install boltai
 
     brew_cask_install sublime-text
     ln -snf "$HOME/.config/sublime-text" \

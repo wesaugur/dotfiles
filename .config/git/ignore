@@ -5,3 +5,6 @@
 .*.un~
 *~
 .tags
+
+# direnv
+.envrc
