@@ -1,0 +1,6 @@
+#!/bin/sh -eux
+
+export GARMIN_USERNAME=$(op read "op://Private/Garmin/username")
+export GARMIN_PASSWORD=$(op read "op://Private/Garmin/password")
+
+exec uvx --with=setuptools withings-sync "$@"
