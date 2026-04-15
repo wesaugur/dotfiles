@@ -182,6 +182,7 @@ mac() {
 
     brew_install direnv vim tmux python uv
     brew_install htop pv moreutils bash-completion@2 ctags fzf fd tree ripgrep
+    brew_install hammerspoon
     brew_install gnupg
     brew_install signify-osx age
     brew_install node  # For GitHub Copilot
