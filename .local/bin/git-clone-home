@@ -28,4 +28,4 @@ rm -rf "$tmp_work_tree" $skip_files
 unset GIT_DIR GIT_WORK_TREE
 
 POST_INSTALL="$HOME/.local/libexec/$REPO.post-install"
-[ -x "$POST_INSTALL" ] && $POST_INSTALL
+[ -x "$POST_INSTALL" ] && "$POST_INSTALL" </dev/tty
