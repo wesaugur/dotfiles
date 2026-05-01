@@ -178,7 +178,6 @@ mac() {
 
     brew_install direnv vim tmux python uv
     brew_install htop pv moreutils bash-completion@2 ctags fzf fd tree ripgrep
-    brew_install hammerspoon
     brew_install gnupg
     brew_install signify-osx age
     brew_install magic-wormhole
@@ -198,6 +197,7 @@ mac() {
             "$vimfiles_dir/plugin" || [ $? -eq 1 ]
 
     brew_cask_install kitty
+    brew_cask_install hammerspoon
 
     brew_cask_install sublime-text
     ln -snf "$HOME/.config/sublime-text" \
