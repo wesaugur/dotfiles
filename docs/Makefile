@@ -28,7 +28,7 @@ git-clone-home: ${LOCAL_DIR}/bin/git-clone-home
 	install -m 0755 $< $@
 
 gitleaks:
-	gitleaks --path=${REPO_DIR}
+	gitleaks git ${REPO_DIR}
 
 shellcheck:
 	git grep --files-with-matches -e '^#!/bin/sh' -e '^#\s*shellcheck' -- :/ | \
