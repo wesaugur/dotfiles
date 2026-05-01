@@ -64,7 +64,6 @@ openbsd() {
     pkg_add htop pv moreutils universal-ctags--iconv fzf ripgrep
     pkg_add gnupg
     pkg_add age
-    pkg_add node  # For GitHub Copilot
     # TODO: uv not in packages/ports; install from upstream
     # TODO: fd-find not in packages/ports
     # NOTE: bash,bash-completion skipped
@@ -104,7 +103,6 @@ void_linux() {
     xbps_install gnupg2-scdaemon pcsclite pcsc-ccid && \
             { sudo ln -s /etc/sv/pcscd /var/service/ || [ $? -eq 1 ] ; }
     xbps_install signify age
-    xbps_install nodejs  # For GitHub Copilot
     # xbps_install magic-wormhole
 
     sudo ln -s "$(command -v moreutils_ts)" /usr/local/bin/ts || [ $? -eq 1 ]
@@ -132,7 +130,6 @@ debian_linux() {
     apt_install htop pv moreutils bash-completion ctags fzf fd-find tree ripgrep
     apt_install gnupg scdaemon
     apt_install signify-openbsd age
-    apt_install nodejs  # For GitHub Copilot
     # TODO: uv not in apt; install from upstream
 
     # apt_install magic-wormhole
@@ -185,7 +182,6 @@ mac() {
     brew_install hammerspoon
     brew_install gnupg
     brew_install signify-osx age
-    brew_install node  # For GitHub Copilot
     brew_install magic-wormhole
 
     brew_install pkgconf
