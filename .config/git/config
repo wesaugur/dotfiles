@@ -7,9 +7,6 @@
 [gpg]
     format = ssh
 
-[commit]
-    gpgsign = true
-
 [alias]
     up = pull --autostash --rebase --stat
     id = config user.email
