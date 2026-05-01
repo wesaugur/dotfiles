@@ -4,6 +4,9 @@
     useConfigOnly = true
     name = Wes Augur
 
+[gpg]
+    format = ssh
+
 [alias]
     up = pull --autostash --rebase --stat
     id = config user.email
@@ -21,7 +24,7 @@
     push-force = push --force-with-lease
 
 [init]
-    defaultBranch = master
+    defaultBranch = main
 
 [core]
     pager = ( diff-highlight || cat ) | $PAGER

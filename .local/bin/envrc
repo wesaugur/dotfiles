@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+# USAGE: envrc <cmd> [args]
+
+exec sh -c '. .envrc; exec "$@"' -- "$@"
