@@ -4,14 +4,15 @@
    t
        Title: wesaugur/dotfiles
       Author: Wes Augur
-   Generator: Asciidoctor 2.0.12
-        Date: 2021-01-14
+   Generator: Asciidoctor 2.0.26
+        Date: 2025-02-09
       Manual: Wes Augur Dotfiles Manual
       Source: Wes Augur Dotfiles
     Language: English
    -->
 <head>
   <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link rel="stylesheet" href="https://wesaugur.sh/mandoc.css" type="text/css" media="all"/>
   <title>DOTFILES(7)</title>
 </head>
@@ -26,43 +27,37 @@
 <div class="manual-text">
 <section class="Sh">
 <h1 class="Sh" id="NAME"><a class="permalink" href="#NAME">NAME</a></h1>
-dotfiles - Wes Augur Dotfiles
+<p class="Pp">dotfiles - Wes Augur Dotfiles</p>
 </section>
 <section class="Sh">
 <h1 class="Sh" id="SYNOPSIS"><a class="permalink" href="#SYNOPSIS">SYNOPSIS</a></h1>
-<b>dotfiles git</b> <i>GIT-COMMAND</i>
+<p class="Pp"><b>dotfiles git</b> <i>GIT-COMMAND</i></p>
 </section>
 <section class="Sh">
 <h1 class="Sh" id="DESCRIPTION"><a class="permalink" href="#DESCRIPTION">DESCRIPTION</a></h1>
-dotfiles(7) is a shell alias that wraps git(1) to simplify managing dotfiles in
-  your home directory.
+<p class="Pp">dotfiles(7) is a shell alias that wraps git(1) to simplify
+    managing dotfiles in your home directory.</p>
 <p class="Pp"></p>
 <div class="Bd-indent">
-<pre>
-alias dotfiles='GIT_DIR=$HOME/.dotfiles.git GIT_WORK_TREE=$HOME'
-</pre>
+<pre>alias dotfiles='GIT_DIR=$HOME/.dotfiles.git GIT_WORK_TREE=$HOME'</pre>
 </div>
 </section>
 <section class="Sh">
 <h1 class="Sh" id="INSTALLATION"><a class="permalink" href="#INSTALLATION">INSTALLATION</a></h1>
 <div class="Bd-indent">
-<pre>
-curl https://wesaugur.sh | sh
-</pre>
+<pre>curl https://wesaugur.sh | sh</pre>
 </div>
 </section>
 <section class="Sh">
 <h1 class="Sh" id="UNINSTALLATION"><a class="permalink" href="#UNINSTALLATION">UNINSTALLATION</a></h1>
 <div class="Bd-indent">
-<pre>
-dotfiles git ls-files | xargs rm
-rm -rf &quot;$DOTFILES_GIT_DIR&quot;
-</pre>
+<pre>dotfiles git ls-files | xargs rm
+rm -rf &quot;$DOTFILES_GIT_DIR&quot;</pre>
 </div>
 </section>
 <section class="Sh">
 <h1 class="Sh" id="EXAMPLES"><a class="permalink" href="#EXAMPLES">EXAMPLES</a></h1>
-<b>dotfiles git</b> <i>status</i>
+<p class="Pp"><b>dotfiles git</b> <i>status</i></p>
 <div class="Bd-indent">Show status of local dotfile changes</div>
 <p class="Pp"><b>dotfiles git</b> <i>diff</i></p>
 <div class="Bd-indent">Show diff of local dotfile changes</div>
@@ -82,7 +77,7 @@ rm -rf &quot;$DOTFILES_GIT_DIR&quot;
 </section>
 <section class="Sh">
 <h1 class="Sh" id="RESOURCES"><a class="permalink" href="#RESOURCES">RESOURCES</a></h1>
-Installer
+<p class="Pp">Installer</p>
 <div class="Bd-indent"><i></i> &lt;https://wesaugur.sh&gt;</div>
 <p class="Pp">Manpage</p>
 <div class="Bd-indent"><i></i> &lt;https://wesaugur.sh/man&gt;</div>
@@ -94,16 +89,16 @@ Installer
 <section class="Sh">
 <h1 class="Sh" id="SEE_ALSO"><a class="permalink" href="#SEE_ALSO">SEE
   ALSO</a></h1>
-git(1)
+<p class="Pp">git(1)</p>
 </section>
 <section class="Sh">
 <h1 class="Sh" id="AUTHOR"><a class="permalink" href="#AUTHOR">AUTHOR</a></h1>
-Wes Augur
+<p class="Pp">Wes Augur</p>
 </section>
 </div>
 <table class="foot">
   <tr>
-    <td class="foot-date">2021-01-14</td>
+    <td class="foot-date">2025-02-09</td>
     <td class="foot-os">Wes Augur Dotfiles</td>
   </tr>
 </table>
